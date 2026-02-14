@@ -1,18 +1,15 @@
-import UIKit
+import ComposableRIBs
 
 @MainActor
 struct AppRootBuilder {
-  private let parentBuilder: any ParentBuildable
+  private let launchRouterFactory: () -> any LaunchRouting
 
-  init(parentBuilder: any ParentBuildable = ParentBuilder()) {
-    self.parentBuilder = parentBuilder
+  init(launchRouterFactory: @escaping () -> any LaunchRouting = { SampleLaunchRouter() }) {
+    self.launchRouterFactory = launchRouterFactory
   }
 
-  func build() -> UIViewController {
-    let router = parentBuilder.build(with: SampleAppDependency(initialCounter: 1))
-    let navigationController = UINavigationController(rootViewController: router.viewController)
-    router.bind(navigationController: navigationController)
-    router.interactor.activate()
-    return navigationController
+  /// Builds the app launch coordinator used by SceneDelegate.
+  func build() -> any LaunchRouting {
+    launchRouterFactory()
   }
 }

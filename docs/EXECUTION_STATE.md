@@ -3,6 +3,12 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- LaunchRouter pattern realignment completed:
+  - Added additive launch abstractions in `ComposableRIBsCore`: `LaunchRouting` and `BaseLaunchRouter`.
+  - Added UIKit launch implementation in `ComposableRIBsUI`: `UIKitLaunchRouter`.
+  - Migrated sample app entry to `SceneDelegate -> LaunchRouting.launch(from:)` using `SampleLaunchRouter`.
+  - Removed direct root feature router retention from `SceneDelegate` and now retain launch router only.
+  - Updated architecture boundary tests to validate launch-router entry and retention pattern.
 - Delegate-first upstream event direction milestone completed:
   - Added governance rules in `AGENTS.md` and `docs/ARCHITECTURE_GUARDRAILS.md` to prioritize `Action.delegate(...)` for upstream module intent.
   - Added additive bridge primitives in `ComposableRIBsTCA`: `ActionRelay`, `ActionObservingReducer`, and `DelegateActionExtractable`.
@@ -56,7 +62,7 @@ This file is the handoff source of truth for continuing work without relying on 
 ## Next Action
 1. Start Phase 3 item #1: add contributor workflow documentation (issue/PR expectations and review quality gate).
 2. Then complete Phase 3 item #2: define semantic versioning policy for v0.x.
-3. Keep delegate-first and protocol-first boundary tests updated as module samples evolve.
+3. Keep launch-router + delegate-first + protocol-first boundary tests updated as module samples evolve.
 
 ## Known Blockers
 - `swift test` in this environment still does not represent iOS-only package execution reliably.

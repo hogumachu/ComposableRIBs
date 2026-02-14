@@ -4,6 +4,7 @@ This sample demonstrates ComposableRIBs with a Parent -> Child -> Grandchild tre
 
 ## What it shows
 - UIKit app entrypoint (`AppDelegate`/`SceneDelegate`)
+- Launch-router-driven app entry (`SceneDelegate -> LaunchRouting.launch(from:)`)
 - UIKit navigation ownership (`UINavigationController` push/pop)
 - SwiftUI feature rendering hosted from UIKit (`UIHostingController`)
 - Pure TCA views and reducers (views send actions only)

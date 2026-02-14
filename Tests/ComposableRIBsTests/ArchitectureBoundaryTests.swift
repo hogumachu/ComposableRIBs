@@ -124,6 +124,21 @@ struct ArchitectureBoundaryTests {
     }
   }
 
+  @Test("SceneDelegate retains launch router and enters via launch(from:)")
+  func sceneDelegateRetainsLaunchRouter() throws {
+    let root = try repositoryRoot()
+    let sceneDelegate = root.appendingPathComponent("Examples/iOSSample/SampleApp/App/SceneDelegate.swift")
+    let sampleLaunchRouter = root.appendingPathComponent("Examples/iOSSample/SampleApp/App/SampleLaunchRouter.swift")
+    let contents = try String(contentsOf: sceneDelegate, encoding: .utf8)
+    let launchRouterContents = try String(contentsOf: sampleLaunchRouter, encoding: .utf8)
+
+    #expect(contents.contains("private var launchRouter: (any LaunchRouting)?"))
+    #expect(contents.contains("launchRouter.launch(from: window)"))
+    #expect(contents.contains("self.launchRouter = launchRouter"))
+    #expect(launchRouterContents.contains("final class SampleLaunchRouter"))
+    #expect(launchRouterContents.contains("parentRouting.bind(navigationController: navigationController)"))
+  }
+
   private func repositoryRoot() throws -> URL {
     let fileURL = URL(fileURLWithPath: #filePath)
     // Tests/ComposableRIBsTests/<file>.swift -> repository root

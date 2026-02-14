@@ -61,6 +61,7 @@ The sample app must continuously demonstrate the intended architecture:
 4. Routers execute UIKit navigation from reducer/interactor delegate-event handling, preferably via case-path delegate extraction.
 5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
 6. Prefer default bridge conveniences (for example, `TCAInteractor(initialState:reducer:)`) to reduce repetitive builder wiring unless an exception is documented.
+7. App entry must use a launch router path (`SceneDelegate -> LaunchRouting.launch(from:)`) and `SceneDelegate` must retain the launch router strongly for runtime observer lifetime.
 
 ## Enforcement
 Guardrails are enforced through both documentation and compile-oriented tests:

@@ -25,6 +25,9 @@ This document defines the current public API boundary, intended audience, and st
 | `TCAInteractor` | `open class` | `public final class` | `evolving-v0x` | External consumers | Lifecycle bridge remains public; includes preferred case-path delegate observation API (`observeDelegateEvents(for:_:)`) and a convenience initializer for builder wiring simplification. |
 | `RoutableViewControlling` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Unifies view-controller backed routing contracts. |
 | `SwiftUIHostingRouter` | `open class` | `open class` | `evolving-v0x` | External consumers | Shared SwiftUI/UIKit hosting base for router ergonomics. |
+| `LaunchRouting` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Standard launch entry contract for app-level routing coordination. |
+| `BaseLaunchRouter` | `open class` | `open class` | `evolving-v0x` | External consumers | Base launch coordinator that owns root router load/launch lifecycle hooks. |
+| `UIKitLaunchRouter` | `open class` | `open class` | `evolving-v0x` | External consumers | UIKit launch implementation that hosts root routing in a navigation controller and activates interactor lifecycle. |
 
 ## Notes
 - This matrix is aligned with `README.md` API maturity sections.
