@@ -3,6 +3,10 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Phase 2 item #1 completed:
+  - Added `LICENSE` with MIT terms (`Copyright (c) 2026 hogumachu`)
+  - Added `CHANGELOG.md` using Keep a Changelog structure
+  - Aligned `README.md` and `docs/ROADMAP.md` with license/changelog status
 - Phase 1 integration edge/stress test hardening completed:
   - Added new nested edge-case coverage in `Tests/ComposableRIBsTests/VerticalSliceTests.swift`
   - Added stress scenarios in `Tests/ComposableRIBsTests/ModuleLifecycleStressTests.swift`
@@ -35,8 +39,8 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 2 item #1: add `LICENSE` and `CHANGELOG.md`.
-2. Define initial v0.x changelog format and release-note discipline.
+1. Start Phase 2 item #2: add contributor workflow documentation (issue/PR expectations and review quality gate).
+2. Then complete Phase 2 item #3: define semantic versioning policy for v0.x.
 3. Keep protocol-first compile gates updated as module samples evolve.
 
 ## Known Blockers
@@ -49,6 +53,9 @@ This file is the handoff source of truth for continuing work without relying on 
 - Roadmap/status docs check:
   - `cat docs/ROADMAP.md`
   - `cat docs/EXECUTION_STATE.md`
+- License/changelog presence and references:
+  - `ls -la LICENSE CHANGELOG.md`
+  - `rg -n "LICENSE|CHANGELOG" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`
 - iOS simulator package tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
 - Architecture boundary tests:
