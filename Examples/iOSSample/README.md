@@ -4,8 +4,9 @@ This sample demonstrates ComposableRIBs with a Parent -> Child -> Grandchild tre
 
 ## What it shows
 - UIKit app entrypoint (`AppDelegate`/`SceneDelegate`)
+- UIKit navigation ownership (`UINavigationController` push/pop)
 - SwiftUI feature rendering hosted from UIKit (`UIHostingController`)
-- TCA reducers for each module
+- Pure TCA views and reducers (views send actions only)
 - RIB-style Builders/Routers and dependency contracts
 - Lifecycle forwarding through `TCAInteractor`
 - Nested cancellation behavior (child ticker effect cancelled on deactivate)
@@ -21,7 +22,7 @@ This sample demonstrates ComposableRIBs with a Parent -> Child -> Grandchild tre
 4. Build and run the `iOSSample` scheme.
 
 ## Flow
-1. Parent screen appears from UIKit root host.
-2. Tap **Attach Child** to attach and activate child module.
-3. In child, tap **Attach Grandchild** to attach and activate grandchild module.
-4. Tap detach actions to observe lifecycle state switching and cancellation.
+1. Parent screen appears as the root of a UIKit navigation stack.
+2. Tap **Show Child** to push and activate the child module.
+3. In child, tap **Show Grandchild** to push and activate the grandchild module.
+4. Use **Close Grandchild** and **Close Child** to pop, detach, and deactivate modules.

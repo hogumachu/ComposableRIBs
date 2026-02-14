@@ -2,30 +2,25 @@ import ComposableArchitecture
 import SwiftUI
 
 struct ParentView: View {
-  @ObservedObject var router: ParentRouter
+  let store: StoreOf<ParentFeature>
 
   var body: some View {
-    WithViewStore(router.store, observe: { $0 }) { viewStore in
-      ScrollView {
-        VStack(alignment: .leading, spacing: 12) {
-          Text("Parent")
-            .font(.title2.bold())
-          Text("Lifecycle: \(viewStore.isActive ? "Active" : "Inactive")")
-            .foregroundStyle(viewStore.isActive ? .green : .secondary)
-          Text("Counter: \(viewStore.counter)")
+    ScrollView {
+      VStack(alignment: .leading, spacing: 12) {
+        Text("Parent")
+          .font(.title2.bold())
+        Text("Lifecycle: \(store.isActive ? "Active" : "Inactive")")
+          .foregroundStyle(store.isActive ? .green : .secondary)
+        Text("Counter: \(store.counter)")
 
-          Button(viewStore.showChild ? "Detach Child" : "Attach Child") {
-            router.toggleChildAttachment()
-          }
-          .buttonStyle(.borderedProminent)
-
-          if router.isChildAttached {
-            ChildView(router: router.childRouter)
-          }
+        Button(store.showChild ? "Close Child" : "Show Child") {
+          store.send(.childButtonTapped)
         }
-        .padding()
+        .buttonStyle(.borderedProminent)
       }
-      .background(Color(.systemGroupedBackground))
+      .padding()
     }
+    .navigationTitle("Parent")
+    .background(Color(.systemGroupedBackground))
   }
 }

@@ -7,13 +7,17 @@ struct ChildFeature {
   struct State: Equatable {
     var isActive = false
     var showGrandchild = false
+    var shouldClose = false
     var ticks = 0
     var seedValue: Int
   }
 
   enum Action: Equatable, LifecycleActionConvertible {
     case lifecycle(InteractorLifecycleAction)
-    case toggleGrandchildTapped
+    case grandchildButtonTapped
+    case setGrandchildPresented(Bool)
+    case closeTapped
+    case closeHandled
     case tick
 
     static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
@@ -40,10 +44,23 @@ struct ChildFeature {
 
       case .lifecycle(.willResignActive):
         state.isActive = false
+        state.showGrandchild = false
         return .cancel(id: CancelID.ticker)
 
-      case .toggleGrandchildTapped:
+      case .grandchildButtonTapped:
         state.showGrandchild.toggle()
+        return .none
+
+      case let .setGrandchildPresented(isPresented):
+        state.showGrandchild = isPresented
+        return .none
+
+      case .closeTapped:
+        state.shouldClose = true
+        return .none
+
+      case .closeHandled:
+        state.shouldClose = false
         return .none
 
       case .tick:

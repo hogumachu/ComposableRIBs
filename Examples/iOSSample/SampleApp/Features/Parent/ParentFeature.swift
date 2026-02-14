@@ -12,7 +12,8 @@ struct ParentFeature {
 
   enum Action: Equatable, LifecycleActionConvertible {
     case lifecycle(InteractorLifecycleAction)
-    case toggleChildTapped
+    case childButtonTapped
+    case setChildPresented(Bool)
 
     static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
       .lifecycle(action)
@@ -28,8 +29,11 @@ struct ParentFeature {
       case .lifecycle(.willResignActive):
         state.isActive = false
         return .none
-      case .toggleChildTapped:
+      case .childButtonTapped:
         state.showChild.toggle()
+        return .none
+      case let .setChildPresented(isPresented):
+        state.showChild = isPresented
         return .none
       }
     }
