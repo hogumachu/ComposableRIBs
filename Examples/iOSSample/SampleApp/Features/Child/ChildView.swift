@@ -13,7 +13,9 @@ struct ChildView: View {
         .foregroundStyle(store.isActive ? .green : .secondary)
       Text("Seed: \(store.seedValue), ticks: \(store.ticks)")
 
-      Button(store.showGrandchild ? "Close Grandchild" : "Show Grandchild") {
+      Text("Grandchild Presented: \(store.isGrandchildPresented ? "Yes" : "No")")
+
+      Button("Show Grandchild") {
         store.send(.grandchildButtonTapped)
       }
       .buttonStyle(.bordered)

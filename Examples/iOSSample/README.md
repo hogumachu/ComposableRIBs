@@ -7,6 +7,7 @@ This sample demonstrates ComposableRIBs with a Parent -> Child -> Grandchild tre
 - UIKit navigation ownership (`UINavigationController` push/pop)
 - SwiftUI feature rendering hosted from UIKit (`UIHostingController`)
 - Pure TCA views and reducers (views send actions only)
+- Delegate-first upstream intent (`Action.delegate(...)`) for parent-child navigation coordination
 - RIB-style Builders/Routers and dependency contracts
 - Lifecycle forwarding through `TCAInteractor`
 - Nested cancellation behavior (child ticker effect cancelled on deactivate)

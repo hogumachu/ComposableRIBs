@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import ComposableRIBs
-import Combine
 
 @MainActor
 final class GrandchildRouter: SwiftUIHostingRouter<GrandchildFeature, GrandchildView>, GrandchildRouting {
@@ -17,15 +16,13 @@ final class GrandchildRouter: SwiftUIHostingRouter<GrandchildFeature, Grandchild
   }
 
   override func bindState() {
-    // Close intent is owned by TCA state; router performs UIKit dismissal side effects.
-    viewStore.publisher.shouldClose
-      .removeDuplicates()
-      .filter { $0 }
-      .sink { [weak self] _ in
-        guard let self else { return }
+    _ = tcaInteractor.observeDelegateEvents { [weak self] delegateEvent in
+      guard let self else { return }
+      switch delegateEvent {
+      case .closeRequested:
         self.onCloseRequested?()
-        _ = self.store.send(.closeHandled)
+        _ = self.store.send(.closeRequestChanged(false))
       }
-      .store(in: &cancellables)
+    }
   }
 }

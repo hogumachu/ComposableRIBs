@@ -6,14 +6,24 @@ struct ParentFeature {
   @ObservableState
   struct State: Equatable {
     var isActive = false
-    var showChild = false
+    var isChildPresented = false
     var counter: Int
   }
 
-  enum Action: Equatable, LifecycleCaseActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
     case lifecycle(InteractorLifecycleAction)
     case childButtonTapped
-    case setChildPresented(Bool)
+    case childPresentationChanged(Bool)
+    case delegate(Delegate)
+
+    enum Delegate: Equatable {
+      case showChildRequested
+    }
+
+    var delegateEvent: Delegate? {
+      guard case let .delegate(event) = self else { return nil }
+      return event
+    }
   }
 
   var body: some ReducerOf<Self> {
@@ -26,10 +36,11 @@ struct ParentFeature {
         state.isActive = false
         return .none
       case .childButtonTapped:
-        state.showChild.toggle()
+        return .send(.delegate(.showChildRequested))
+      case let .childPresentationChanged(isPresented):
+        state.isChildPresented = isPresented
         return .none
-      case let .setChildPresented(isPresented):
-        state.showChild = isPresented
+      case .delegate:
         return .none
       }
     }

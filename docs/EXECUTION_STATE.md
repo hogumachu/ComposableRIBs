@@ -3,6 +3,12 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Delegate-first upstream event direction milestone completed:
+  - Added governance rules in `AGENTS.md` and `docs/ARCHITECTURE_GUARDRAILS.md` to prioritize `Action.delegate(...)` for upstream module intent.
+  - Added additive bridge primitives in `ComposableRIBsTCA`: `ActionRelay`, `ActionObservingReducer`, and `DelegateActionExtractable`.
+  - Extended `TCAInteractor` with optional action observation APIs and delegate-event observation helper.
+  - Migrated iOS sample Parent -> Child -> Grandchild routing intents to delegate-first flow (router no longer polls `showX`/`shouldClose` flags).
+  - Added delegate bridge tests in `Tests/ComposableRIBsTests/DelegateActionBridgeTests.swift`.
 - Phase reorder + protocol-first abstraction milestone completed:
   - Moved open-source governance/release discipline work behind the new abstraction-focused phase.
   - Added `ComposableRIBsUI` target with `SwiftUIHostingRouter` and `RoutableViewControlling`.
@@ -50,7 +56,7 @@ This file is the handoff source of truth for continuing work without relying on 
 ## Next Action
 1. Start Phase 3 item #1: add contributor workflow documentation (issue/PR expectations and review quality gate).
 2. Then complete Phase 3 item #2: define semantic versioning policy for v0.x.
-3. Keep protocol-first compile gates updated as module samples evolve.
+3. Keep delegate-first and protocol-first boundary tests updated as module samples evolve.
 
 ## Known Blockers
 - `swift test` in this environment still does not represent iOS-only package execution reliably.
@@ -69,6 +75,8 @@ This file is the handoff source of truth for continuing work without relying on 
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
 - Architecture boundary tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ArchitectureBoundaryTests`
+- Delegate action bridge tests:
+  - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/DelegateActionBridgeTests`
 - Vertical slice edge-case tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/VerticalSliceTests`
 - Lifecycle stress tests:

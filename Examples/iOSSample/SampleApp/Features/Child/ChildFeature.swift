@@ -6,19 +6,28 @@ struct ChildFeature {
   @ObservableState
   struct State: Equatable {
     var isActive = false
-    var showGrandchild = false
-    var shouldClose = false
+    var isGrandchildPresented = false
     var ticks = 0
     var seedValue: Int
   }
 
-  enum Action: Equatable, LifecycleCaseActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
     case lifecycle(InteractorLifecycleAction)
     case grandchildButtonTapped
-    case setGrandchildPresented(Bool)
+    case grandchildPresentationChanged(Bool)
     case closeTapped
-    case closeHandled
     case tick
+    case delegate(Delegate)
+
+    enum Delegate: Equatable {
+      case showGrandchildRequested
+      case closeRequested
+    }
+
+    var delegateEvent: Delegate? {
+      guard case let .delegate(event) = self else { return nil }
+      return event
+    }
   }
 
   private enum CancelID: Hashable {
@@ -40,23 +49,20 @@ struct ChildFeature {
 
       case .lifecycle(.willResignActive):
         state.isActive = false
-        state.showGrandchild = false
+        state.isGrandchildPresented = false
         return .cancel(id: CancelID.ticker)
 
       case .grandchildButtonTapped:
-        state.showGrandchild.toggle()
-        return .none
+        return .send(.delegate(.showGrandchildRequested))
 
-      case let .setGrandchildPresented(isPresented):
-        state.showGrandchild = isPresented
+      case let .grandchildPresentationChanged(isPresented):
+        state.isGrandchildPresented = isPresented
         return .none
 
       case .closeTapped:
-        state.shouldClose = true
-        return .none
+        return .send(.delegate(.closeRequested))
 
-      case .closeHandled:
-        state.shouldClose = false
+      case .delegate:
         return .none
 
       case .tick:

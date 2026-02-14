@@ -14,10 +14,13 @@ protocol GrandchildBuildable {
 @MainActor
 struct GrandchildBuilder: GrandchildBuildable {
   func build(with dependency: any GrandchildDependency) -> any GrandchildRouting {
+    let actionRelay = ActionRelay<GrandchildFeature.Action>()
     let store = Store(initialState: GrandchildFeature.State(title: dependency.grandchildTitle)) {
-      GrandchildFeature()
+      ActionObservingReducer(base: GrandchildFeature()) { action in
+        actionRelay.emit(action)
+      }
     }
-    let interactor = TCAInteractor<GrandchildFeature>(store: store)
+    let interactor = TCAInteractor<GrandchildFeature>(store: store, actionRelay: actionRelay)
     return GrandchildRouter(store: store, interactor: interactor)
   }
 }

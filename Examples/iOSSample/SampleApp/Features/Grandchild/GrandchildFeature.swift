@@ -6,14 +6,24 @@ struct GrandchildFeature {
   @ObservableState
   struct State: Equatable {
     var isActive = false
-    var shouldClose = false
+    var closeRequested = false
     var title: String
   }
 
-  enum Action: Equatable, LifecycleCaseActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
     case lifecycle(InteractorLifecycleAction)
     case closeTapped
-    case closeHandled
+    case closeRequestChanged(Bool)
+    case delegate(Delegate)
+
+    enum Delegate: Equatable {
+      case closeRequested
+    }
+
+    var delegateEvent: Delegate? {
+      guard case let .delegate(event) = self else { return nil }
+      return event
+    }
   }
 
   var body: some ReducerOf<Self> {
@@ -26,10 +36,12 @@ struct GrandchildFeature {
         state.isActive = false
         return .none
       case .closeTapped:
-        state.shouldClose = true
+        state.closeRequested = true
+        return .send(.delegate(.closeRequested))
+      case let .closeRequestChanged(value):
+        state.closeRequested = value
         return .none
-      case .closeHandled:
-        state.shouldClose = false
+      case .delegate:
         return .none
       }
     }

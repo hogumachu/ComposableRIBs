@@ -18,6 +18,7 @@
 - Roadmap priority updated: protocol-first abstraction and boilerplate reduction now precede open-source process hardening.
 - License and changelog baseline are maintained as completed readiness artifacts and carried into later release-governance phase.
 - Phase 2 abstraction milestone completed: protocol-first module contracts and shared hosting/lifecycle boilerplate reductions are validated.
+- Delegate-first upstream event channel is now implemented for the sample flow, with state-flag routing reduced to fallback guidance.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -87,6 +88,7 @@ Reduce repetitive module wiring and enforce protocol-oriented boundaries so feat
 3. [x] Migrate sample app module wiring to contract-driven boundaries using the new abstractions.
 4. [x] Validate boilerplate reduction with an explicit checklist and sample before/after simplification notes.
 5. [x] Add compile and integration tests covering abstraction invariants and lifecycle/navigation helper behavior.
+6. [x] Introduce delegate-first upstream event channels and migrate sample navigation intents away from state-flag polling.
 
 ### Acceptance Criteria
 1. Parent/child and child/grandchild boundaries are expressed through protocol contracts only.
@@ -94,6 +96,7 @@ Reduce repetitive module wiring and enforce protocol-oriented boundaries so feat
 3. Sample still demonstrates UIKit-owned navigation and TCA-owned state/action responsibilities.
 4. Abstraction behavior is covered by compile-oriented and integration tests that pass in CI.
 5. No breaking API changes are introduced while improving developer ergonomics.
+6. Upstream parent-child coordination is delegate-first by default, with state flags treated as fallback guidance only.
 
 ### Dependencies
 - Phase 0 and 1 outputs (validated sample flow and reliable lifecycle/cancellation tests).

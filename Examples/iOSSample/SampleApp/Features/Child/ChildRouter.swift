@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import ComposableRIBs
-import Combine
 import UIKit
 
 @MainActor
@@ -28,49 +27,36 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
     self.navigationController = navigationController
     self.onCloseRequested = onCloseRequested
     grandchildRouter.bind(onCloseRequested: { [weak self] in
-      _ = self?.store.send(.setGrandchildPresented(false))
+      self?.dismissGrandchildIfNeeded(animated: true)
     })
-    syncGrandchildPresentation(shouldShow: viewStore.showGrandchild, animated: false)
   }
 
   func detachGrandchildIfNeeded(animated: Bool) {
-    if viewStore.showGrandchild {
-      _ = store.send(.setGrandchildPresented(false))
-      return
-    }
-    syncGrandchildPresentation(shouldShow: false, animated: animated)
+    dismissGrandchildIfNeeded(animated: animated)
   }
 
   override func bindState() {
-    // Router derives UIKit navigation from state to keep View/Reducer free of imperative routing calls.
-    viewStore.publisher.showGrandchild
-      .removeDuplicates()
-      .sink { [weak self] shouldShow in
-        self?.syncGrandchildPresentation(shouldShow: shouldShow, animated: true)
-      }
-      .store(in: &cancellables)
-
-    viewStore.publisher.shouldClose
-      .removeDuplicates()
-      .filter { $0 }
-      .sink { [weak self] _ in
-        guard let self else { return }
+    _ = tcaInteractor.observeDelegateEvents { [weak self] delegateEvent in
+      guard let self else { return }
+      switch delegateEvent {
+      case .showGrandchildRequested:
+        self.presentGrandchildIfNeeded(animated: true)
+      case .closeRequested:
         self.onCloseRequested?()
-        _ = self.store.send(.closeHandled)
       }
-      .store(in: &cancellables)
+    }
   }
 
-  private func syncGrandchildPresentation(shouldShow: Bool, animated: Bool) {
+  private func presentGrandchildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
+    guard !isGrandchildAttached else { return }
+    attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
+    isGrandchildAttached = true
+    _ = store.send(.grandchildPresentationChanged(true))
+  }
 
-    if shouldShow {
-      guard !isGrandchildAttached else { return }
-      attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
-      isGrandchildAttached = true
-      return
-    }
-
+  private func dismissGrandchildIfNeeded(animated: Bool) {
+    guard let navigationController else { return }
     guard isGrandchildAttached else { return }
     deactivateDetachAndPop(
       grandchildRouter,
@@ -79,5 +65,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
       animated: animated
     )
     isGrandchildAttached = false
+    _ = store.send(.grandchildPresentationChanged(false))
   }
 }

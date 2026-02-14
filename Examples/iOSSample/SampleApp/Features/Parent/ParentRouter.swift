@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import ComposableRIBs
-import Combine
 import UIKit
 
 @MainActor
@@ -23,31 +22,31 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
   func bind(navigationController: UINavigationController) {
     self.navigationController = navigationController
     childRouter.bind(navigationController: navigationController, onCloseRequested: { [weak self] in
-      _ = self?.store.send(.setChildPresented(false))
+      self?.dismissChildIfNeeded(animated: true)
     })
-    syncChildPresentation(shouldShow: viewStore.showChild, animated: false)
   }
 
   override func bindState() {
-    // Navigation is state-driven: reducer toggles state, router performs UIKit side effects.
-    viewStore.publisher.showChild
-      .removeDuplicates()
-      .sink { [weak self] shouldShow in
-        self?.syncChildPresentation(shouldShow: shouldShow, animated: true)
+    // Upstream navigation intent is delegate-first. Router maps delegate actions to UIKit transitions.
+    _ = tcaInteractor.observeDelegateEvents { [weak self] delegateEvent in
+      guard let self else { return }
+      switch delegateEvent {
+      case .showChildRequested:
+        self.presentChildIfNeeded(animated: true)
       }
-      .store(in: &cancellables)
+    }
   }
 
-  private func syncChildPresentation(shouldShow: Bool, animated: Bool) {
+  private func presentChildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
+    guard !isChildAttached else { return }
+    attachActivateAndPush(childRouter, in: navigationController, animated: animated)
+    isChildAttached = true
+    _ = store.send(.childPresentationChanged(true))
+  }
 
-    if shouldShow {
-      guard !isChildAttached else { return }
-      attachActivateAndPush(childRouter, in: navigationController, animated: animated)
-      isChildAttached = true
-      return
-    }
-
+  private func dismissChildIfNeeded(animated: Bool) {
+    guard let navigationController else { return }
     guard isChildAttached else { return }
 
     childRouter.detachGrandchildIfNeeded(animated: animated)
@@ -58,5 +57,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
       animated: animated
     )
     isChildAttached = false
+    _ = store.send(.childPresentationChanged(false))
   }
 }

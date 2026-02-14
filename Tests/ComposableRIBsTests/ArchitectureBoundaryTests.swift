@@ -87,6 +87,40 @@ struct ArchitectureBoundaryTests {
     #expect(!childContents.contains("GrandchildRouter"))
   }
 
+  @Test("Sample routers avoid state-flag polling for upstream navigation intents")
+  func sampleRoutersPreferDelegateEventFlow() throws {
+    let root = try repositoryRoot()
+    let parentRouter = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Parent/ParentRouter.swift"
+    )
+    let childRouter = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Child/ChildRouter.swift"
+    )
+    let grandchildRouter = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Grandchild/GrandchildRouter.swift"
+    )
+
+    let parentContents = try String(contentsOf: parentRouter, encoding: .utf8)
+    let childContents = try String(contentsOf: childRouter, encoding: .utf8)
+    let grandchildContents = try String(contentsOf: grandchildRouter, encoding: .utf8)
+
+    #expect(parentContents.contains("observeDelegateEvents"))
+    #expect(childContents.contains("observeDelegateEvents"))
+    #expect(grandchildContents.contains("observeDelegateEvents"))
+
+    let disallowedTokens = [
+      "viewStore.publisher.showChild",
+      "viewStore.publisher.showGrandchild",
+      "viewStore.publisher.shouldClose"
+    ]
+
+    for token in disallowedTokens {
+      #expect(!parentContents.contains(token))
+      #expect(!childContents.contains(token))
+      #expect(!grandchildContents.contains(token))
+    }
+  }
+
   private func repositoryRoot() throws -> URL {
     let fileURL = URL(fileURLWithPath: #filePath)
     // Tests/ComposableRIBsTests/<file>.swift -> repository root

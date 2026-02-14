@@ -37,15 +37,27 @@
 - Parent modules must not access child concrete internals beyond declared contracts.
 - Router references must not cross feature boundaries except through routing contracts.
 - SwiftUI views must depend on `StoreOf<Feature>` (or scoped stores), not router objects.
-- Reducers express navigation intent as state/action changes; routers execute UIKit navigation side effects.
+- Upstream cross-module intent should prefer `Action.delegate(...)` events when a module needs to notify its parent.
+- Delegate channels are optional by default; do not add delegate boilerplate to modules that do not need upstream signaling.
+- Reducers express intent and business state; routers execute UIKit navigation side effects.
 - Module boundaries must remain microservice-style:
   - communicate through contracts (protocols + actions/state),
   - keep implementation details private to each module boundary.
+
+## Delegate-First Upstream Event Rule
+- For parent-child module coordination, prefer delegate actions over router subscriptions to navigation-state flags.
+- Recommended action shape:
+  - `case childButtonTapped`
+  - `case delegate(Delegate)`
+  - nested `enum Delegate { ... }`
+- Router and interactor should consume delegate events from action stream bridging rather than deriving transitions from `showX`/`shouldClose` flags.
+- State-driven navigation flags are a fallback for modules that cannot reasonably introduce a delegate channel yet.
 
 ### Protocol-First Review Gate
 - Reject changes when:
   - concrete dependency leakage crosses module boundaries,
   - view-router direct coupling is introduced,
+  - upstream module coordination is implemented with state-flag polling when a delegate channel is feasible,
   - reducer code performs UIKit navigation side effects,
   - architecture behavior changes without corresponding docs updates.
 

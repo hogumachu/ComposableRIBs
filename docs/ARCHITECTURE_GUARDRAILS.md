@@ -43,19 +43,21 @@ Treat each feature module as an independently composable unit:
 - View rendering and intent dispatch.
 - Reducer state transitions.
 - Business effects and cancellation semantics.
+- Upstream delegate intent emission (`Action.delegate(...)`) when parent coordination is required.
 
 ### Router-owned
 - UIKit navigation side effects.
 - Router tree attach/detach.
 - Runtime wiring to child modules.
+- Consuming delegate events from action streams and translating them to push/pop side effects.
 
 ## Sample Code Requirements
 The sample app must continuously demonstrate the intended architecture:
 
 1. Parent knows child contracts, not child concrete internals.
 2. Views depend on stores, not routers.
-3. Reducers model navigation intent as state/action.
-4. Routers execute UIKit navigation from reducer-driven intent/state.
+3. Upstream cross-module intent is delegate-first (`Action.delegate(...)`), with state flags as fallback only.
+4. Routers execute UIKit navigation from reducer/interactor delegate-event handling.
 5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
 
 ## Enforcement

@@ -13,7 +13,9 @@ struct ParentView: View {
           .foregroundStyle(store.isActive ? .green : .secondary)
         Text("Counter: \(store.counter)")
 
-        Button(store.showChild ? "Close Child" : "Show Child") {
+        Text("Child Presented: \(store.isChildPresented ? "Yes" : "No")")
+
+        Button("Show Child") {
           store.send(.childButtonTapped)
         }
         .buttonStyle(.borderedProminent)

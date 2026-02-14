@@ -24,10 +24,13 @@ struct ParentBuilder: ParentBuildable {
     let childDependency = ParentComponent(dependency: dependency)
     let child = childBuilder.build(with: childDependency)
 
+    let actionRelay = ActionRelay<ParentFeature.Action>()
     let store = Store(initialState: ParentFeature.State(counter: dependency.initialCounter)) {
-      ParentFeature()
+      ActionObservingReducer(base: ParentFeature()) { action in
+        actionRelay.emit(action)
+      }
     }
-    let interactor = TCAInteractor<ParentFeature>(store: store)
+    let interactor = TCAInteractor<ParentFeature>(store: store, actionRelay: actionRelay)
 
     return ParentRouter(store: store, interactor: interactor, childRouter: child)
   }

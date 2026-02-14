@@ -11,6 +11,7 @@ struct GrandchildView: View {
       Text(store.title)
       Text("Lifecycle: \(store.isActive ? "Active" : "Inactive")")
         .foregroundStyle(store.isActive ? .green : .secondary)
+      Text("Close Requested: \(store.closeRequested ? "Yes" : "No")")
 
       Button("Close Grandchild") {
         store.send(.closeTapped)

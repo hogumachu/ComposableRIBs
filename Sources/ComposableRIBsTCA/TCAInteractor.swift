@@ -8,12 +8,14 @@ import Foundation
 /// Stability: evolving-v0x
 public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.Action: LifecycleActionConvertible {
   public let store: StoreOf<Feature>
+  private let actionRelay: ActionRelay<Feature.Action>?
 
   /// Tracks long-running tasks started while active so they can be cancelled deterministically.
   private var managedTasks: [UUID: Task<Void, Never>] = [:]
 
-  public init(store: StoreOf<Feature>) {
+  public init(store: StoreOf<Feature>, actionRelay: ActionRelay<Feature.Action>? = nil) {
     self.store = store
+    self.actionRelay = actionRelay
   }
 
   public func activate() {
@@ -45,5 +47,46 @@ public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, 
   /// Keeps bookkeeping small by removing tasks that were already cancelled elsewhere.
   private func pruneCancelledTasks() {
     managedTasks = managedTasks.filter { !$0.value.isCancelled }
+  }
+
+  /// Registers an action observer when this interactor has an attached action relay.
+  ///
+  /// Returns `nil` when action observation was not configured for this interactor.
+  @discardableResult
+  public func observeActions(_ observer: @escaping (Feature.Action) -> Void) -> UUID? {
+    actionRelay?.observe(observer)
+  }
+
+  /// Removes an action observer previously returned by `observeActions`.
+  public func removeActionObserver(_ token: UUID) {
+    actionRelay?.removeObserver(token)
+  }
+
+}
+
+public extension TCAInteractor where Feature.Action: DelegateActionExtractable {
+  /// Registers a delegate-event observer for actions that expose optional delegate events.
+  @discardableResult
+  func observeDelegateEvents(
+    _ observer: @escaping (Feature.Action.Delegate) -> Void
+  ) -> UUID? {
+    observeActions { action in
+      guard let event = action.delegateEvent else { return }
+      observer(event)
+    }
+  }
+}
+
+public extension TCAInteractor where Feature.Action: Sendable {
+  /// Returns an action stream when this interactor has an attached action relay.
+  ///
+  /// The stream is empty when observation was not configured.
+  func actionStream() -> AsyncStream<Feature.Action> {
+    guard let actionRelay else {
+      return AsyncStream { continuation in
+        continuation.finish()
+      }
+    }
+    return actionRelay.makeStream()
   }
 }
