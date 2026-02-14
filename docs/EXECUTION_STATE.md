@@ -3,6 +3,11 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- iOS sample navigation realignment completed:
+  - Views now depend on `StoreOf<Feature>` only (no router references in views)
+  - Reducers now handle routing intents as state changes
+  - UIKit routers now own `UINavigationController` push/pop and module attach/detach
+  - Parent -> Child -> Grandchild flow remains intact with lifecycle activation/deactivation
 - Phase 0 roadmap checklist synced and marked complete in `docs/ROADMAP.md`.
 - Phase 1 sample bootstrap completed:
   - `Examples/iOSSample` project generated with UIKit root + SwiftUI host
@@ -21,7 +26,7 @@ This file is the handoff source of truth for continuing work without relying on 
 
 ## Next Action
 1. Start Phase 1 item #3: publish module wiring guide and lifecycle bridge guide.
-2. Expand docs with sample walkthrough from `Examples/iOSSample`.
+2. Document the sample routing contract (state intent -> router side effect) in contributor-facing docs.
 3. Then move to Phase 1 item #4/#5 integration and stress test depth.
 
 ## Known Blockers
