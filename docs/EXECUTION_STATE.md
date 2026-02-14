@@ -4,6 +4,11 @@ This file is the handoff source of truth for continuing work without relying on 
 
 ## Last Completed
 - Phase 0 roadmap checklist synced and marked complete in `docs/ROADMAP.md`.
+- Phase 1 sample bootstrap completed:
+  - `Examples/iOSSample` project generated with UIKit root + SwiftUI host
+  - Parent -> Child -> Grandchild module flow implemented
+  - iOS simulator build validated
+  - package test run validated via Xcode scheme (`17 tests passed`)
 - Core API stabilization completed (access boundary + stability labeling):
   - commit `ba12222`
 - README completed and repository URL aligned:
@@ -15,14 +20,13 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 1 item #1: add sample app demonstrating parent-child RIB flow on iOS.
-2. Include SwiftUI-first module flow and UIKit host integration entrypoint in the sample.
-3. After sample app bootstrap, update `README.md` and `docs/ROADMAP.md` with sample usage status.
+1. Start Phase 1 item #3: publish module wiring guide and lifecycle bridge guide.
+2. Expand docs with sample walkthrough from `Examples/iOSSample`.
+3. Then move to Phase 1 item #4/#5 integration and stress test depth.
 
 ## Known Blockers
-- `swift test` in this environment may fail because the package is iOS-only and SwiftPM attempts macOS host evaluation.
-- `xcodebuild ... test` can fail until Xcode package macro trust is approved:
-  - `DependenciesMacrosPlugin` from `swift-dependencies` requires approval.
+- `swift test` in this environment still does not represent iOS-only package execution reliably.
+- Preferred validation path remains `xcodebuild` on iOS simulator for this repository.
 
 ## Validation Commands
 - Repository status:
@@ -30,8 +34,10 @@ This file is the handoff source of truth for continuing work without relying on 
 - Roadmap/status docs check:
   - `cat docs/ROADMAP.md`
   - `cat docs/EXECUTION_STATE.md`
-- iOS simulator test attempt (after macro trust approval):
+- iOS simulator package tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
+- iOS sample app build:
+  - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 
 ## Resume Checklist
 1. Open this file first: `docs/EXECUTION_STATE.md`.
