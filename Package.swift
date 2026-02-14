@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
   name: "ComposableRIBs",
+  platforms: [
+    .iOS(.v17)
+  ],
   products: [
     .library(
       name: "ComposableRIBs",
@@ -18,10 +21,28 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "ComposableRIBs",
+      name: "ComposableRIBsCore"
+    ),
+    .target(
+      name: "ComposableRIBsTCA",
       dependencies: [
+        "ComposableRIBsCore",
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
       ]
     ),
+    .target(
+      name: "ComposableRIBs",
+      dependencies: [
+        "ComposableRIBsCore",
+        "ComposableRIBsTCA"
+      ]
+    ),
+    .testTarget(
+      name: "ComposableRIBsTests",
+      dependencies: [
+        "ComposableRIBs",
+        .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+      ]
+    )
   ]
 )

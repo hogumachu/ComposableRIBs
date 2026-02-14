@@ -4,6 +4,7 @@
 - This library is iOS-first and combines RIBs architecture with TCA.
 - UI and business logic must be implemented with SwiftUI + TCA.
 - Router, Builder, Dependency, and structural composition must follow RIBs patterns implemented in this repository.
+- Platform scope is iOS only (UIKit and SwiftUI). macOS and other Apple platforms are out of scope.
 
 ## Responsibility Split
 - View: SwiftUI and TCA store-driven rendering.
@@ -23,6 +24,7 @@
 - No codegen/template CLI.
 - No high-level DSL abstraction yet.
 - No support target below iOS 17.
+- No macOS support.
 
 ## Evolution Principles
 - Start from minimal public primitives.
@@ -53,11 +55,14 @@
 - Keep comments accurate and close to the code they describe.
 - Do not add redundant comments that restate trivial code.
 - When adding new source files, include enough comments for external contributors to understand responsibilities and extension points quickly.
+- For newly added source code, add comments whenever behavior, constraints, or lifecycle intent may be unclear to readers.
+- Public types and non-trivial public methods should include concise doc comments (`///`) by default.
 
 ### Review Gate
 - Changes that add or modify behavior should be rejected if:
   - required documentation updates are missing,
   - complex logic lacks intent-level comments,
+  - new source files are introduced without sufficient explanatory comments,
   - or contributor-facing text is not written in English.
 
 ## Commit Message Policy
