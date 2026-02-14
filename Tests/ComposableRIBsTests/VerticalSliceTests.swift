@@ -14,6 +14,15 @@ struct VerticalSliceTests {
     let initialCount: Int
   }
 
+  protocol ChildDependency: RIBDependency {
+    var startEnabled: Bool { get }
+  }
+
+  struct ParentDependency: ChildDependency {
+    let startEnabled: Bool
+    let parentOnlyValue: String
+  }
+
   struct CounterBuilder: Buildable {
     func build(with dependency: AppDependency) -> CounterRouter {
       let store = Store(initialState: CounterFeature.State(count: dependency.initialCount)) {
@@ -21,6 +30,16 @@ struct VerticalSliceTests {
       }
       let interactor = TCAInteractor<CounterFeature>(store: store)
       return CounterRouter(interactor: interactor, store: store)
+    }
+  }
+
+  struct ChildBuilder: Buildable {
+    func build(with dependency: any ChildDependency) -> BaseRouter {
+      let router = BaseRouter()
+      if dependency.startEnabled {
+        router.load()
+      }
+      return router
     }
   }
 
@@ -94,5 +113,15 @@ struct VerticalSliceTests {
 
     #expect(viewStore.count == 3)
     #expect(viewStore.isActive)
+  }
+
+  @Test("Builder can depend on dependency contracts instead of concrete parent types")
+  func dependencyWiringUsesContracts() {
+    let builder = ChildBuilder()
+    let parent = ParentDependency(startEnabled: true, parentOnlyValue: "private")
+
+    let router = builder.build(with: parent)
+
+    #expect(type(of: router) == BaseRouter.self)
   }
 }

@@ -24,4 +24,32 @@ struct CorePrimitivesTests {
 
     #expect(parent.children.isEmpty)
   }
+
+  @Test("BaseRouter keeps different children and preserves identity uniqueness")
+  func attachMultipleDistinctChildren() {
+    let parent = BaseRouter()
+    let first = BaseRouter()
+    let second = BaseRouter()
+
+    parent.attachChild(first)
+    parent.attachChild(second)
+    parent.attachChild(first)
+
+    #expect(parent.children.count == 2)
+    #expect(parent.children.contains(where: { ObjectIdentifier($0) == ObjectIdentifier(first) }))
+    #expect(parent.children.contains(where: { ObjectIdentifier($0) == ObjectIdentifier(second) }))
+  }
+
+  @Test("BaseRouter ignores detach when child was never attached")
+  func detachNonExistentChildIsNoOp() {
+    let parent = BaseRouter()
+    let existing = BaseRouter()
+    let nonExistent = BaseRouter()
+
+    parent.attachChild(existing)
+    parent.detachChild(nonExistent)
+
+    #expect(parent.children.count == 1)
+    #expect(ObjectIdentifier(parent.children[0]) == ObjectIdentifier(existing))
+  }
 }
