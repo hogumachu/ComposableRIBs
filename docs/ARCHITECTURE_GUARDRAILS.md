@@ -16,6 +16,8 @@ Protocol-based abstraction is the primary architectural constraint.
 - Child modules consume dependency protocols only.
 - Parent concrete types must not leak into child builder interfaces.
 - Parent modules must not access child concrete internals.
+- Concrete router type references across module boundaries are forbidden.
+- Module wiring should use protocol contracts for both dependencies and routing outputs.
 
 ## Allowed vs Forbidden
 
@@ -54,6 +56,7 @@ The sample app must continuously demonstrate the intended architecture:
 2. Views depend on stores, not routers.
 3. Reducers model navigation intent as state/action.
 4. Routers execute UIKit navigation from reducer-driven intent/state.
+5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
 
 ## Enforcement
 Guardrails are enforced through both documentation and compile-oriented tests:

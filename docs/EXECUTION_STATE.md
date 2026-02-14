@@ -3,6 +3,15 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Phase reorder + protocol-first abstraction milestone completed:
+  - Moved open-source governance/release discipline work behind the new abstraction-focused phase.
+  - Added `ComposableRIBsUI` target with `SwiftUIHostingRouter` and `RoutableViewControlling`.
+  - Added `LifecycleCaseActionConvertible` to remove repeated lifecycle forwarding boilerplate.
+  - Migrated sample module boundaries to protocol-based routing/building contracts.
+  - Added hosting-router behavior tests and strengthened architecture boundary compile checks.
+  - Validation passed:
+    - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
+    - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 - Phase 2 item #1 completed:
   - Added `LICENSE` with MIT terms (`Copyright (c) 2026 hogumachu`)
   - Added `CHANGELOG.md` using Keep a Changelog structure
@@ -39,8 +48,8 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 2 item #2: add contributor workflow documentation (issue/PR expectations and review quality gate).
-2. Then complete Phase 2 item #3: define semantic versioning policy for v0.x.
+1. Start Phase 3 item #1: add contributor workflow documentation (issue/PR expectations and review quality gate).
+2. Then complete Phase 3 item #2: define semantic versioning policy for v0.x.
 3. Keep protocol-first compile gates updated as module samples evolve.
 
 ## Known Blockers

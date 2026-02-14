@@ -18,7 +18,10 @@ This document defines the current public API boundary, intended audience, and st
 | `RIBDependency` | `public protocol` | `public protocol` | `stable-v0x` | External consumers | Marker dependency contract used across modules. |
 | `InteractorLifecycleAction` | `public enum` | `public enum` | `evolving-v0x` | External consumers | Bridge event shape may evolve with lifecycle ergonomics. |
 | `LifecycleActionConvertible` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Bridge mapping contract may evolve before 1.0. |
+| `LifecycleCaseActionConvertible` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Boilerplate-reduction helper for lifecycle action enums. |
 | `TCAInteractor` | `open class` | `public final class` | `evolving-v0x` | External consumers | Lifecycle bridge remains public; customization surface is intentionally narrowed for now. |
+| `RoutableViewControlling` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Unifies view-controller backed routing contracts. |
+| `SwiftUIHostingRouter` | `open class` | `open class` | `evolving-v0x` | External consumers | Shared SwiftUI/UIKit hosting base for router ergonomics. |
 
 ## Notes
 - This matrix is aligned with `README.md` API maturity sections.

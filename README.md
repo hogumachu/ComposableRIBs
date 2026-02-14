@@ -94,6 +94,8 @@ This snippet is a conceptual starter to show lifecycle wiring, not a full produc
 - `RIBComponent`: Holds dependency contracts and limits concrete-type leakage across module boundaries.
 - `LifecycleActionConvertible`: Converts shared interactor lifecycle events into each feature's concrete action type.
 - `TCAInteractor`: Forwards lifecycle events to reducer actions and owns managed task cancellation.
+- `LifecycleCaseActionConvertible`: Removes per-feature lifecycle forwarding boilerplate when action enums contain `case lifecycle(...)`.
+- `SwiftUIHostingRouter`: Centralizes store/interactor/view hosting and shared navigation lifecycle helpers.
 - Protocol-first boundary rule: parent-child composition must use dependency contracts instead of concrete parent types.
 
 ## API Maturity (v0.x)
