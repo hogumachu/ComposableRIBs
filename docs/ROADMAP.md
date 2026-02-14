@@ -12,6 +12,7 @@
 - Project governance rules exist in `AGENTS.md` (documentation/comment policy, commit policy, iOS-only scope).
 - Public API maturity and contributor-facing documentation are now defined for v0.x.
 - Phase 0 (v0.1.0 target) is complete as of 2026-02-14.
+- Phase 1 sample bootstrap is in place with UIKit root hosting SwiftUI and a Parent -> Child -> Grandchild flow.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -46,8 +47,8 @@ Solidify the core architecture, clarify public API expectations, and establish b
 Make the library easier to evaluate and adopt through realistic examples, stronger guides, and deeper integration testing.
 
 ### Deliverables
-1. [ ] Add sample app(s) demonstrating parent-child RIB flow on iOS.
-2. [ ] Include both SwiftUI-first and UIKit-host integration examples (still iOS-only).
+1. [x] Add sample app(s) demonstrating parent-child RIB flow on iOS.
+2. [x] Include both SwiftUI-first and UIKit-host integration examples (still iOS-only).
 3. [ ] Publish usage documentation: module wiring guide and lifecycle bridge guide.
 4. [ ] Add edge-case integration tests for multi-module flows.
 5. [ ] Add concurrency/lifecycle stress scenarios to detect cancellation and activation ordering issues.

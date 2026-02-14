@@ -126,6 +126,7 @@ swift test
 See `/Users/sungjun.hong/develop/ComposableRIBs/docs/ROADMAP.md` for the v0.x delivery plan.
 
 For a symbol-by-symbol boundary and stability table, see `/Users/sungjun.hong/develop/ComposableRIBs/docs/API_STABILITY.md`.
+For a working iOS sample app (UIKit root + SwiftUI/TCA modules), see `/Users/sungjun.hong/develop/ComposableRIBs/Examples/iOSSample/README.md`.
 
 ## Contributing
 Before contributing, read `/Users/sungjun.hong/develop/ComposableRIBs/AGENTS.md`.
