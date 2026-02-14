@@ -31,7 +31,6 @@ struct ChildBuilder: ChildBuildable {
     }
 
     return ChildRouter(
-      store: interactor.store,
       interactor: interactor,
       dependency: dependency,
       grandchildBuilder: grandchildBuilder

@@ -17,6 +17,6 @@ struct GrandchildBuilder: GrandchildBuildable {
     let interactor: TCAInteractor<GrandchildFeature> = TCAInteractor(initialState: GrandchildFeature.State(title: dependency.grandchildTitle)) {
       GrandchildFeature()
     }
-    return GrandchildRouter(store: interactor.store, interactor: interactor)
+    return GrandchildRouter(interactor: interactor)
   }
 }

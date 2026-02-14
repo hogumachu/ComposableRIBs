@@ -11,15 +11,14 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
   private var isChildAttached = false
 
   init(
-    store: StoreOf<ParentFeature>,
     interactor: TCAInteractor<ParentFeature>,
     dependency: any ParentDependency,
     childBuilder: any ChildBuildable
   ) {
     self.dependency = dependency
     self.childBuilder = childBuilder
-    super.init(store: store, interactor: interactor) {
-      ParentView(store: store)
+    super.init(interactor: interactor) {
+      ParentView(store: interactor.store)
     }
   }
 

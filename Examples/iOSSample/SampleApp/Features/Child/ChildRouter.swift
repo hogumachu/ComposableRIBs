@@ -12,15 +12,14 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   private var onCloseRequested: (() -> Void)?
 
   init(
-    store: StoreOf<ChildFeature>,
     interactor: TCAInteractor<ChildFeature>,
     dependency: any ChildDependency,
     grandchildBuilder: any GrandchildBuildable
   ) {
     self.dependency = dependency
     self.grandchildBuilder = grandchildBuilder
-    super.init(store: store, interactor: interactor) {
-      ChildView(store: store)
+    super.init(interactor: interactor) {
+      ChildView(store: interactor.store)
     }
   }
 

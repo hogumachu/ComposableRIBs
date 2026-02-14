@@ -27,7 +27,7 @@ struct SwiftUIHostingRouterTests {
     init() {
       let store = Store(initialState: HostFeature.State()) { HostFeature() }
       let interactor = TCAInteractor<HostFeature>(store: store)
-      super.init(store: store, interactor: interactor) { EmptyView() }
+      super.init(interactor: interactor) { EmptyView() }
     }
   }
 

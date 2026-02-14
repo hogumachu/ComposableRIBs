@@ -5,9 +5,9 @@ import ComposableRIBs
 final class GrandchildRouter: SwiftUIHostingRouter<GrandchildFeature, GrandchildView>, GrandchildRouting {
   private var onCloseRequested: (() -> Void)?
 
-  init(store: StoreOf<GrandchildFeature>, interactor: TCAInteractor<GrandchildFeature>) {
-    super.init(store: store, interactor: interactor) {
-      GrandchildView(store: store)
+  init(interactor: TCAInteractor<GrandchildFeature>) {
+    super.init(interactor: interactor) {
+      GrandchildView(store: interactor.store)
     }
   }
 

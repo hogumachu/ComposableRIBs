@@ -26,7 +26,6 @@ struct ParentBuilder: ParentBuildable {
     }
 
     return ParentRouter(
-      store: interactor.store,
       interactor: interactor,
       dependency: dependency,
       childBuilder: childBuilder

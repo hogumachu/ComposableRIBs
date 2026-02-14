@@ -29,11 +29,14 @@ where Feature: Reducer, Feature.State: Equatable, RootView: View {
   /// Shared cancellation set for state binding subscriptions.
   open var cancellables: Set<AnyCancellable> = []
 
+  /// Initializes a hosting router from an interactor and derives the feature store from it.
+  ///
+  /// This keeps router wiring consistent and avoids duplicated `store` plumbing in builders.
   public init(
-    store: StoreOf<Feature>,
     interactor: TCAInteractor<Feature>,
     @ViewBuilder rootView: () -> RootView
   ) {
+    let store = interactor.store
     self.store = store
     self.tcaInteractor = interactor
     self.interactor = interactor
