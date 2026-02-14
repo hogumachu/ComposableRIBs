@@ -1,11 +1,31 @@
 import ComposableArchitecture
 import ComposableRIBs
+import UIKit
 
 @MainActor
-struct ChildBuilder: Buildable {
-  private let grandchildBuilder = GrandchildBuilder()
+protocol ChildRouting: RoutableViewControlling {
+  func bind(
+    navigationController: UINavigationController,
+    onCloseRequested: @escaping () -> Void
+  )
 
-  func build(with dependency: any ChildDependency) -> ChildRouter {
+  func detachGrandchildIfNeeded(animated: Bool)
+}
+
+@MainActor
+protocol ChildBuildable {
+  func build(with dependency: any ChildDependency) -> any ChildRouting
+}
+
+@MainActor
+struct ChildBuilder: ChildBuildable {
+  private let grandchildBuilder: any GrandchildBuildable
+
+  init(grandchildBuilder: any GrandchildBuildable = GrandchildBuilder()) {
+    self.grandchildBuilder = grandchildBuilder
+  }
+
+  func build(with dependency: any ChildDependency) -> any ChildRouting {
     let grandchildDependency = ChildComponent(dependency: dependency)
     let grandchild = grandchildBuilder.build(with: grandchildDependency)
 

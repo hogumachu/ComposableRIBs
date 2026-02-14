@@ -1,18 +1,11 @@
 import ComposableArchitecture
 import ComposableRIBs
 import Combine
-import SwiftUI
 import UIKit
 
 @MainActor
-final class ChildRouter: BaseRouter {
-  let store: StoreOf<ChildFeature>
-  let interactor: TCAInteractor<ChildFeature>
-  let grandchildRouter: GrandchildRouter
-  let viewController: UIViewController
-
-  private let viewStore: ViewStoreOf<ChildFeature>
-  private var cancellables: Set<AnyCancellable> = []
+final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRouting {
+  private let grandchildRouter: any GrandchildRouting
   private weak var navigationController: UINavigationController?
   private var isGrandchildAttached = false
   private var onCloseRequested: (() -> Void)?
@@ -20,15 +13,12 @@ final class ChildRouter: BaseRouter {
   init(
     store: StoreOf<ChildFeature>,
     interactor: TCAInteractor<ChildFeature>,
-    grandchildRouter: GrandchildRouter
+    grandchildRouter: any GrandchildRouting
   ) {
-    self.store = store
-    self.interactor = interactor
     self.grandchildRouter = grandchildRouter
-    self.viewStore = ViewStore(store, observe: { $0 })
-    self.viewController = UIHostingController(rootView: ChildView(store: store))
-    super.init()
-    bindState()
+    super.init(store: store, interactor: interactor) {
+      ChildView(store: store)
+    }
   }
 
   func bind(
@@ -40,7 +30,6 @@ final class ChildRouter: BaseRouter {
     grandchildRouter.bind(onCloseRequested: { [weak self] in
       _ = self?.store.send(.setGrandchildPresented(false))
     })
-
     syncGrandchildPresentation(shouldShow: viewStore.showGrandchild, animated: false)
   }
 
@@ -52,7 +41,7 @@ final class ChildRouter: BaseRouter {
     syncGrandchildPresentation(shouldShow: false, animated: animated)
   }
 
-  private func bindState() {
+  override func bindState() {
     // Router derives UIKit navigation from state to keep View/Reducer free of imperative routing calls.
     viewStore.publisher.showGrandchild
       .removeDuplicates()
@@ -77,20 +66,18 @@ final class ChildRouter: BaseRouter {
 
     if shouldShow {
       guard !isGrandchildAttached else { return }
-      attachChild(grandchildRouter)
-      grandchildRouter.interactor.activate()
-      navigationController.pushViewController(grandchildRouter.viewController, animated: animated)
+      attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
       isGrandchildAttached = true
       return
     }
 
     guard isGrandchildAttached else { return }
-
-    grandchildRouter.interactor.deactivate()
-    detachChild(grandchildRouter)
-    if navigationController.viewControllers.contains(grandchildRouter.viewController) {
-      navigationController.popToViewController(viewController, animated: animated)
-    }
+    deactivateDetachAndPop(
+      grandchildRouter,
+      in: navigationController,
+      to: viewController,
+      animated: animated
+    )
     isGrandchildAttached = false
   }
 }

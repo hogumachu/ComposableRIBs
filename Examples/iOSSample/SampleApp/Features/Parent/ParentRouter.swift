@@ -1,29 +1,23 @@
 import ComposableArchitecture
 import ComposableRIBs
 import Combine
-import SwiftUI
 import UIKit
 
 @MainActor
-final class ParentRouter: BaseRouter {
-  let store: StoreOf<ParentFeature>
-  let interactor: TCAInteractor<ParentFeature>
-  let childRouter: ChildRouter
-  let viewController: UIViewController
-
-  private let viewStore: ViewStoreOf<ParentFeature>
-  private var cancellables: Set<AnyCancellable> = []
+final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, ParentRouting {
+  private let childRouter: any ChildRouting
   private weak var navigationController: UINavigationController?
   private var isChildAttached = false
 
-  init(store: StoreOf<ParentFeature>, interactor: TCAInteractor<ParentFeature>, childRouter: ChildRouter) {
-    self.store = store
-    self.interactor = interactor
+  init(
+    store: StoreOf<ParentFeature>,
+    interactor: TCAInteractor<ParentFeature>,
+    childRouter: any ChildRouting
+  ) {
     self.childRouter = childRouter
-    self.viewStore = ViewStore(store, observe: { $0 })
-    self.viewController = UIHostingController(rootView: ParentView(store: store))
-    super.init()
-    bindState()
+    super.init(store: store, interactor: interactor) {
+      ParentView(store: store)
+    }
   }
 
   func bind(navigationController: UINavigationController) {
@@ -31,11 +25,10 @@ final class ParentRouter: BaseRouter {
     childRouter.bind(navigationController: navigationController, onCloseRequested: { [weak self] in
       _ = self?.store.send(.setChildPresented(false))
     })
-
     syncChildPresentation(shouldShow: viewStore.showChild, animated: false)
   }
 
-  private func bindState() {
+  override func bindState() {
     // Navigation is state-driven: reducer toggles state, router performs UIKit side effects.
     viewStore.publisher.showChild
       .removeDuplicates()
@@ -50,9 +43,7 @@ final class ParentRouter: BaseRouter {
 
     if shouldShow {
       guard !isChildAttached else { return }
-      attachChild(childRouter)
-      childRouter.interactor.activate()
-      navigationController.pushViewController(childRouter.viewController, animated: animated)
+      attachActivateAndPush(childRouter, in: navigationController, animated: animated)
       isChildAttached = true
       return
     }
@@ -60,11 +51,12 @@ final class ParentRouter: BaseRouter {
     guard isChildAttached else { return }
 
     childRouter.detachGrandchildIfNeeded(animated: animated)
-    childRouter.interactor.deactivate()
-    detachChild(childRouter)
-    if navigationController.viewControllers.contains(childRouter.viewController) {
-      navigationController.popToViewController(viewController, animated: animated)
-    }
+    deactivateDetachAndPop(
+      childRouter,
+      in: navigationController,
+      to: viewController,
+      animated: animated
+    )
     isChildAttached = false
   }
 }

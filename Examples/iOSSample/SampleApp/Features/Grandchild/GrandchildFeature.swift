@@ -10,14 +10,10 @@ struct GrandchildFeature {
     var title: String
   }
 
-  enum Action: Equatable, LifecycleActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible {
     case lifecycle(InteractorLifecycleAction)
     case closeTapped
     case closeHandled
-
-    static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-      .lifecycle(action)
-    }
   }
 
   var body: some ReducerOf<Self> {

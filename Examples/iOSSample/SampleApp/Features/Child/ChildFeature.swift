@@ -12,17 +12,13 @@ struct ChildFeature {
     var seedValue: Int
   }
 
-  enum Action: Equatable, LifecycleActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible {
     case lifecycle(InteractorLifecycleAction)
     case grandchildButtonTapped
     case setGrandchildPresented(Bool)
     case closeTapped
     case closeHandled
     case tick
-
-    static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-      .lifecycle(action)
-    }
   }
 
   private enum CancelID: Hashable {

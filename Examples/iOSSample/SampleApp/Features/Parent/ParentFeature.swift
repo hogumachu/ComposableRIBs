@@ -10,14 +10,10 @@ struct ParentFeature {
     var counter: Int
   }
 
-  enum Action: Equatable, LifecycleActionConvertible {
+  enum Action: Equatable, LifecycleCaseActionConvertible {
     case lifecycle(InteractorLifecycleAction)
     case childButtonTapped
     case setChildPresented(Bool)
-
-    static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-      .lifecycle(action)
-    }
   }
 
   var body: some ReducerOf<Self> {
