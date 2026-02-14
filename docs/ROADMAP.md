@@ -13,6 +13,7 @@
 - Public API maturity and contributor-facing documentation are now defined for v0.x.
 - Phase 0 (v0.1.0 target) is complete as of 2026-02-14.
 - Phase 1 sample bootstrap is in place with UIKit root hosting SwiftUI and a Parent -> Child -> Grandchild flow.
+- Sample realignment completed: views/reducers use pure TCA patterns while UIKit routers own push/pop navigation and module attach/detach.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
