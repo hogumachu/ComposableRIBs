@@ -52,8 +52,8 @@ Make the library easier to evaluate and adopt through realistic examples, strong
 1. [x] Add sample app(s) demonstrating parent-child RIB flow on iOS.
 2. [x] Include both SwiftUI-first and UIKit-host integration examples (still iOS-only).
 3. [ ] Publish usage documentation: module wiring guide and lifecycle bridge guide.
-4. [ ] Add edge-case integration tests for multi-module flows.
-5. [ ] Add concurrency/lifecycle stress scenarios to detect cancellation and activation ordering issues.
+4. [x] Add edge-case integration tests for multi-module flows.
+5. [x] Add concurrency/lifecycle stress scenarios to detect cancellation and activation ordering issues.
 6. [x] Document and enforce protocol-first architecture guardrails across AGENTS/README/docs.
 7. [x] Add compile-oriented boundary tests for concrete leakage prevention and view-router coupling checks.
 
