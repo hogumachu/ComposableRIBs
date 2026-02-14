@@ -10,24 +10,15 @@ struct ModuleLifecycleStressTests {
   struct LifecycleFeature {
     @ObservableState
     struct State: Equatable {
-      var isActive = false
+      var value = 0
     }
 
-    enum Action: Equatable, LifecycleCaseActionConvertible {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable {
+      case noop
     }
 
     var body: some ReducerOf<Self> {
-      Reduce { state, action in
-        switch action {
-        case .lifecycle(.didBecomeActive):
-          state.isActive = true
-          return .none
-        case .lifecycle(.willResignActive):
-          state.isActive = false
-          return .none
-        }
-      }
+      Reduce { _, _ in .none }
     }
   }
 

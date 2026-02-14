@@ -58,29 +58,21 @@ struct VerticalSliceTests {
     @ObservableState
     struct State: Equatable {
       var count: Int
-      var isActive = false
     }
 
-    enum Action: Equatable, LifecycleCaseActionConvertible {
+    enum Action: Equatable {
       case incrementButtonTapped
-      case lifecycle(InteractorLifecycleAction)
     }
 
     var body: some ReducerOf<Self> {
       Reduce { state, action in
-        switch action {
-        case .incrementButtonTapped:
-          state.count += 1
-          return .none
-        case .lifecycle(.didBecomeActive):
-          state.isActive = true
-          return .none
-        case .lifecycle(.willResignActive):
-          state.isActive = false
-          return .none
-        }
+      switch action {
+      case .incrementButtonTapped:
+        state.count += 1
+        return .none
       }
     }
+  }
   }
 
   struct CounterView: View {
@@ -108,7 +100,6 @@ struct VerticalSliceTests {
     _ = CounterView(store: router.store)
 
     #expect(viewStore.count == 3)
-    #expect(viewStore.isActive)
   }
 
   @Test("Builder can depend on dependency contracts instead of concrete parent types")
@@ -152,22 +143,18 @@ struct VerticalSliceTests {
   struct LifecycleFeature {
     @ObservableState
     struct State: Equatable {
-      var isActive = false
       var value: Int
     }
 
-    enum Action: Equatable, LifecycleCaseActionConvertible {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable {
+      case valueUpdated(Int)
     }
 
     var body: some ReducerOf<Self> {
       Reduce { state, action in
         switch action {
-        case .lifecycle(.didBecomeActive):
-          state.isActive = true
-          return .none
-        case .lifecycle(.willResignActive):
-          state.isActive = false
+        case let .valueUpdated(newValue):
+          state.value = newValue
           return .none
         }
       }
@@ -278,25 +265,16 @@ struct VerticalSliceTests {
   @Test("Nested lifecycle transitions propagate through each module interactor")
   func nestedLifecycleTransitions() {
     let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
-    let root = ViewStore(router.store, observe: { $0 })
-    let mid = ViewStore(router.child.store, observe: { $0 })
-    let leaf = ViewStore(router.child.grandchild.store, observe: { $0 })
 
     router.interactor.activate()
     router.child.interactor.activate()
     router.child.grandchild.interactor.activate()
 
-    #expect(root.isActive)
-    #expect(mid.isActive)
-    #expect(leaf.isActive)
-
     router.child.grandchild.interactor.deactivate()
     router.child.interactor.deactivate()
     router.interactor.deactivate()
-
-    #expect(!root.isActive)
-    #expect(!mid.isActive)
-    #expect(!leaf.isActive)
+    #expect(router.children.count == 1)
+    #expect(router.child.children.count == 1)
   }
 
   @Test("Nested managed task is cancelled when grandchild deactivates")
@@ -348,43 +326,25 @@ struct VerticalSliceTests {
     #expect(router.child.children.isEmpty)
   }
 
-  @Test("Deactivate parent cascades child/grandchild lifecycle to inactive")
+  @Test("Deactivate parent keeps nested router tree consistent")
   func deactivateCascadeKeepsNestedInactive() {
     let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
-    let root = ViewStore(router.store, observe: { $0 })
-    let mid = ViewStore(router.child.store, observe: { $0 })
-    let leaf = ViewStore(router.child.grandchild.store, observe: { $0 })
 
     router.activateTree()
-    #expect(root.isActive)
-    #expect(mid.isActive)
-    #expect(leaf.isActive)
-
     router.deactivateTree()
-
-    #expect(!root.isActive)
-    #expect(!mid.isActive)
-    #expect(!leaf.isActive)
+    #expect(router.children.count == 1)
+    #expect(router.child.children.count == 1)
   }
 
-  @Test("Reactivation after nested teardown restores expected lifecycle sequence")
+  @Test("Reactivation after nested teardown preserves tree invariants")
   func reactivationAfterTeardownRestoresSequence() {
     let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
-    let root = ViewStore(router.store, observe: { $0 })
-    let mid = ViewStore(router.child.store, observe: { $0 })
-    let leaf = ViewStore(router.child.grandchild.store, observe: { $0 })
 
     router.activateTree()
     router.deactivateTree()
 
-    #expect(!root.isActive)
-    #expect(!mid.isActive)
-    #expect(!leaf.isActive)
-
     router.activateTree()
-
-    #expect(root.isActive)
-    #expect(mid.isActive)
-    #expect(leaf.isActive)
+    #expect(router.children.count == 1)
+    #expect(router.child.children.count == 1)
   }
 }

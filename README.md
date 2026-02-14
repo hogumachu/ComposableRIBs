@@ -11,7 +11,7 @@ ComposableRIBs is an iOS-focused library that combines TCA for UI and business l
 ## Architecture Boundary (TCA vs RIBs)
 - TCA is responsible for `State`, `Action`, `Reducer`, and effect logic.
 - RIB-style structure in this repository is responsible for composition and runtime wiring through `Buildable`, `Routing`, `Interactable`, and `RIBComponent`.
-- `TCAInteractor` bridges both layers by forwarding lifecycle actions to reducers and cancelling managed runtime tasks when deactivating.
+- `TCAInteractor` bridges both layers by owning runtime lifecycle (`activate`/`deactivate`) and cancelling managed runtime tasks when deactivating.
 - Protocol-first module contracts are mandatory.
 - Concrete dependency leakage across module boundaries is forbidden.
 - Presentation state/action is TCA-owned; UIKit navigation side effects are router-owned.
@@ -48,16 +48,10 @@ struct CounterFeature {
   @ObservableState
   struct State: Equatable {
     var count = 0
-    var isActive = false
   }
 
-  enum Action: Equatable, LifecycleActionConvertible {
+  enum Action: Equatable {
     case incrementTapped
-    case lifecycle(InteractorLifecycleAction)
-
-    static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-      .lifecycle(action)
-    }
   }
 
   var body: some ReducerOf<Self> {
@@ -65,12 +59,6 @@ struct CounterFeature {
       switch action {
       case .incrementTapped:
         state.count += 1
-        return .none
-      case .lifecycle(.didBecomeActive):
-        state.isActive = true
-        return .none
-      case .lifecycle(.willResignActive):
-        state.isActive = false
         return .none
       }
     }
@@ -89,16 +77,14 @@ func bootstrap() {
 }
 ```
 
-This snippet is a conceptual starter to show lifecycle wiring, not a full production module.
+This snippet is a conceptual starter to show interactor wiring, not a full production module.
 
 ## Core Concepts
 - `Buildable`: Defines how a module is built from a dependency contract into a routing root.
 - `Routing` / `BaseRouter`: Defines and provides default child attachment/detachment behavior for router trees.
 - `Interactable`: Defines activation and deactivation lifecycle hooks for runtime components.
 - `RIBComponent`: Holds dependency contracts and limits concrete-type leakage across module boundaries.
-- `LifecycleActionConvertible`: Converts shared interactor lifecycle events into each feature's concrete action type.
-- `TCAInteractor`: Forwards lifecycle events to reducer actions and owns managed task cancellation.
-- `LifecycleCaseActionConvertible`: Removes per-feature lifecycle forwarding boilerplate when action enums contain `case lifecycle(...)`.
+- `TCAInteractor`: Hosts a feature store, exposes action observation hooks, and owns managed task cancellation on deactivation.
 - `TCAInteractor(initialState:reducer:)`: Preferred convenience initializer that removes repetitive store/relay wiring from builders.
 - `ActionObservingReducer` + `ActionRelay`: Forward reducer action streams to router/interactor observers without coupling views to routers.
 - `TCAInteractor.observeDelegateEvents(for:_:)`: Preferred case-path delegate extraction API for upstream module intent.
@@ -117,8 +103,6 @@ Core API (stable in v0.x):
 - `RIBDependency`
 
 Bridge API (evolving in v0.x):
-- `InteractorLifecycleAction`
-- `LifecycleActionConvertible`
 - Lifecycle bridge ergonomics around `TCAInteractor`
 - Example composition patterns and integration guidance
 
@@ -127,7 +111,7 @@ Compatibility note: minor breaking changes may occur before 1.0 and will be docu
 ## Testing
 Current test focus includes:
 - Router child attach/detach behavior
-- Lifecycle forwarding
+- Interactor lifecycle management behavior
 - Managed task cancellation
 - Vertical wiring validation
 

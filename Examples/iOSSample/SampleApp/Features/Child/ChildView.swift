@@ -9,8 +9,6 @@ struct ChildView: View {
       Text("Child")
         .font(.headline)
 
-      Text("Lifecycle: \(store.isActive ? "Active" : "Inactive")")
-        .foregroundStyle(store.isActive ? .green : .secondary)
       Text("Seed: \(store.seedValue), ticks: \(store.ticks)")
 
       Text("Grandchild Presented: \(store.isGrandchildPresented ? "Yes" : "No")")
@@ -29,5 +27,11 @@ struct ChildView: View {
     .navigationTitle("Child")
     .navigationBarBackButtonHidden(true)
     .background(Color.blue.opacity(0.1))
+    .onAppear {
+      store.send(.viewAppeared)
+    }
+    .onDisappear {
+      store.send(.viewDisappeared)
+    }
   }
 }

@@ -10,25 +10,16 @@ struct TCAInteractorTests {
   struct Feature {
     @ObservableState
     struct State: Equatable {
-      var activations = 0
-      var deactivations = 0
       var tickCount = 0
     }
 
-    enum Action: Equatable, LifecycleCaseActionConvertible {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable {
       case tick
     }
 
     var body: some ReducerOf<Self> {
       Reduce { state, action in
         switch action {
-        case .lifecycle(.didBecomeActive):
-          state.activations += 1
-          return .none
-        case .lifecycle(.willResignActive):
-          state.deactivations += 1
-          return .none
         case .tick:
           state.tickCount += 1
           return .none
@@ -37,56 +28,53 @@ struct TCAInteractorTests {
     }
   }
 
-  @Test("Interactor forwards activate/deactivate as lifecycle actions")
-  func lifecycleForwarding() {
-    let store = Store(initialState: Feature.State()) { Feature() }
-    let viewStore = ViewStore(store, observe: { $0 })
-    let interactor = TCAInteractor<Feature>(store: store)
+  @Reducer
+  struct PureFeature {
+    @ObservableState
+    struct State: Equatable {
+      var value = 0
+    }
 
-    interactor.activate()
-    interactor.deactivate()
+    enum Action: Equatable {
+      case increment
+    }
 
-    #expect(viewStore.activations == 1)
-    #expect(viewStore.deactivations == 1)
+    var body: some ReducerOf<Self> {
+      Reduce { state, action in
+        switch action {
+        case .increment:
+          state.value += 1
+          return .none
+        }
+      }
+    }
   }
 
-  @Test("Interactor forwards each activate call")
-  func repeatedActivateForwarding() {
-    let store = Store(initialState: Feature.State()) { Feature() }
+  @Test("Interactor can be used with pure TCA action without lifecycle case")
+  func pureFeatureCanUseInteractor() {
+    let store = Store(initialState: PureFeature.State()) { PureFeature() }
     let viewStore = ViewStore(store, observe: { $0 })
-    let interactor = TCAInteractor<Feature>(store: store)
+    let interactor = TCAInteractor<PureFeature>(store: store)
 
     interactor.activate()
-    interactor.activate()
-
-    #expect(viewStore.activations == 2)
-    #expect(viewStore.deactivations == 0)
-  }
-
-  @Test("Interactor forwards deactivate without prior activate")
-  func deactivateWithoutActivateForwarding() {
-    let store = Store(initialState: Feature.State()) { Feature() }
-    let viewStore = ViewStore(store, observe: { $0 })
-    let interactor = TCAInteractor<Feature>(store: store)
-
+    viewStore.send(.increment)
     interactor.deactivate()
 
-    #expect(viewStore.activations == 0)
-    #expect(viewStore.deactivations == 1)
+    #expect(viewStore.value == 1)
   }
 
-  @Test("Interactor forwards lifecycle across activate-deactivate-activate cycle")
-  func activateDeactivateActivateCycleForwarding() {
+  @Test("Interactor activate and deactivate keep reducer state unchanged by default")
+  func activateDeactivateDoesNotMutateState() {
     let store = Store(initialState: Feature.State()) { Feature() }
     let viewStore = ViewStore(store, observe: { $0 })
     let interactor = TCAInteractor<Feature>(store: store)
 
     interactor.activate()
-    interactor.deactivate()
     interactor.activate()
+    interactor.deactivate()
+    interactor.deactivate()
 
-    #expect(viewStore.activations == 2)
-    #expect(viewStore.deactivations == 1)
+    #expect(viewStore.tickCount == 0)
   }
 
   @Test("Interactor cancels managed tasks on deactivate")

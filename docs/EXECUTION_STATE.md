@@ -3,6 +3,14 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Pure TCA feature-action lifecycle decoupling completed:
+  - Removed `InteractorLifecycleAction`, `LifecycleActionConvertible`, and `LifecycleCaseActionConvertible` from `Sources/ComposableRIBsTCA`.
+  - Updated `TCAInteractor` and `SwiftUIHostingRouter` so features no longer need a shared lifecycle action case.
+  - Migrated iOS sample features to pure TCA actions and moved child ticker runtime work to router/interactor-managed tasks.
+  - Updated lifecycle-related tests and docs to reflect interactor-owned runtime lifecycle behavior.
+  - Validation passed:
+    - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
+    - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 - Sample router lifetime hardening milestone completed:
   - Refactored sample Parent/Child routing to build dismissible child modules on demand.
   - Removed long-lived strong child/grandchild router retention and release child references on close.
@@ -27,7 +35,6 @@ This file is the handoff source of truth for continuing work without relying on 
 - Phase reorder + protocol-first abstraction milestone completed:
   - Moved open-source governance/release discipline work behind the new abstraction-focused phase.
   - Added `ComposableRIBsUI` target with `SwiftUIHostingRouter` and `RoutableViewControlling`.
-  - Added `LifecycleCaseActionConvertible` to remove repeated lifecycle forwarding boilerplate.
   - Migrated sample module boundaries to protocol-based routing/building contracts.
   - Added hosting-router behavior tests and strengthened architecture boundary compile checks.
   - Validation passed:

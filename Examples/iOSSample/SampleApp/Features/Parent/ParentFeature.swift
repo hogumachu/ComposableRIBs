@@ -5,14 +5,12 @@ import ComposableRIBs
 struct ParentFeature {
   @ObservableState
   struct State: Equatable {
-    var isActive = false
     var isChildPresented = false
     var counter: Int
   }
 
   @CasePathable
-  enum Action: Equatable, LifecycleCaseActionConvertible {
-    case lifecycle(InteractorLifecycleAction)
+  enum Action: Equatable {
     case childButtonTapped
     case childPresentationChanged(Bool)
     case delegate(Delegate)
@@ -25,12 +23,6 @@ struct ParentFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .lifecycle(.didBecomeActive):
-        state.isActive = true
-        return .none
-      case .lifecycle(.willResignActive):
-        state.isActive = false
-        return .none
       case .childButtonTapped:
         return .send(.delegate(.showChildRequested))
       case let .childPresentationChanged(isPresented):

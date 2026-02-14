@@ -5,14 +5,12 @@ import ComposableRIBs
 struct GrandchildFeature {
   @ObservableState
   struct State: Equatable {
-    var isActive = false
     var closeRequested = false
     var title: String
   }
 
   @CasePathable
-  enum Action: Equatable, LifecycleCaseActionConvertible {
-    case lifecycle(InteractorLifecycleAction)
+  enum Action: Equatable {
     case closeTapped
     case closeRequestChanged(Bool)
     case delegate(Delegate)
@@ -25,12 +23,6 @@ struct GrandchildFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .lifecycle(.didBecomeActive):
-        state.isActive = true
-        return .none
-      case .lifecycle(.willResignActive):
-        state.isActive = false
-        return .none
       case .closeTapped:
         state.closeRequested = true
         return .send(.delegate(.closeRequested))

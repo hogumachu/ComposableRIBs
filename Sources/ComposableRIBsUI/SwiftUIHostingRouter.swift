@@ -19,7 +19,7 @@ public protocol RoutableViewControlling: Routing {
 /// Stability: evolving-v0x
 @MainActor
 open class SwiftUIHostingRouter<Feature, RootView>: BaseRouter, RoutableViewControlling
-where Feature: Reducer, Feature.State: Equatable, Feature.Action: LifecycleActionConvertible, RootView: View {
+where Feature: Reducer, Feature.State: Equatable, RootView: View {
   public let store: StoreOf<Feature>
   public let interactor: any Interactable
   public let tcaInteractor: TCAInteractor<Feature>

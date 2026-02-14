@@ -14,8 +14,7 @@ struct DelegateActionBridgeTests {
     }
 
     @CasePathable
-    enum Action: Equatable, LifecycleCaseActionConvertible {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable {
       case incrementTapped
       case delegate(Delegate)
 
@@ -31,7 +30,7 @@ struct DelegateActionBridgeTests {
         case .incrementTapped:
           state.count += 1
           return .send(.delegate(.incrementTapped))
-        case .delegate, .lifecycle:
+        case .delegate:
           return .none
         }
       }
@@ -43,8 +42,7 @@ struct DelegateActionBridgeTests {
     @ObservableState
     struct State: Equatable {}
 
-    enum Action: Equatable, LifecycleCaseActionConvertible {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable {
       case noop
     }
 
@@ -58,8 +56,7 @@ struct DelegateActionBridgeTests {
     @ObservableState
     struct State: Equatable {}
 
-    enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
-      case lifecycle(InteractorLifecycleAction)
+    enum Action: Equatable, DelegateActionExtractable {
       case emit
       case delegate(Delegate)
 
@@ -78,7 +75,7 @@ struct DelegateActionBridgeTests {
         switch action {
         case .emit:
           return .send(.delegate(.emitted))
-        case .delegate, .lifecycle:
+        case .delegate:
           return .none
         }
       }

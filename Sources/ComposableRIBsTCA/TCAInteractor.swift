@@ -3,10 +3,10 @@ import ComposableRIBsCore
 import Foundation
 
 @MainActor
-/// Bridges RIB lifecycle hooks into TCA actions and owns task cancellation at deactivation.
+/// Bridges RIB lifecycle ownership into TCA store hosting and owns task cancellation at deactivation.
 ///
 /// Stability: evolving-v0x
-public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.Action: LifecycleActionConvertible {
+public final class TCAInteractor<Feature>: Interactable where Feature: Reducer {
   public let store: StoreOf<Feature>
   private let actionRelay: ActionRelay<Feature.Action>?
 
@@ -36,11 +36,10 @@ public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, 
   }
 
   public func activate() {
-    _ = store.send(.makeLifecycleAction(.didBecomeActive))
+    // Lifecycle ownership stays in the interactor/router layer so feature actions can stay pure TCA.
   }
 
   public func deactivate() {
-    _ = store.send(.makeLifecycleAction(.willResignActive))
     // Align with RIB lifecycle semantics: stop all interactor-owned runtime work.
     cancelManagedTasks()
   }

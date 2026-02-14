@@ -5,15 +5,15 @@ import ComposableRIBs
 struct ChildFeature {
   @ObservableState
   struct State: Equatable {
-    var isActive = false
     var isGrandchildPresented = false
     var ticks = 0
     var seedValue: Int
   }
 
   @CasePathable
-  enum Action: Equatable, LifecycleCaseActionConvertible {
-    case lifecycle(InteractorLifecycleAction)
+  enum Action: Equatable {
+    case viewAppeared
+    case viewDisappeared
     case grandchildButtonTapped
     case grandchildPresentationChanged(Bool)
     case closeTapped
@@ -33,8 +33,8 @@ struct ChildFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .lifecycle(.didBecomeActive):
-        state.isActive = true
+      case .viewAppeared:
+        // Keep timer ownership in pure TCA reducer logic.
         return .run { send in
           while !Task.isCancelled {
             try await Task.sleep(for: .seconds(1))
@@ -43,9 +43,7 @@ struct ChildFeature {
         }
         .cancellable(id: CancelID.ticker, cancelInFlight: true)
 
-      case .lifecycle(.willResignActive):
-        state.isActive = false
-        state.isGrandchildPresented = false
+      case .viewDisappeared:
         return .cancel(id: CancelID.ticker)
 
       case .grandchildButtonTapped:

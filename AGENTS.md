@@ -9,15 +9,15 @@
 ## Responsibility Split
 - View: SwiftUI and TCA store-driven rendering.
 - Reducer: TCA only; owns state transitions and business logic.
-- Interactor: bridges lifecycle and external inputs to reducer actions.
+- Interactor: owns activation/deactivation lifecycle and external input bridging.
 - Router: owns child attachment/detachment and module tree management.
 - Builder: composes dependencies and wires Router/Interactor/Store/View.
 - Dependency: explicit contracts only; child modules must not depend on parent concrete types.
 
 ## Interactor-Reducer Bridge Rules
-- Interactor owns lifecycle forwarding to TCA actions.
-- `activate()` must emit `.lifecycle(.didBecomeActive)`.
-- `deactivate()` must emit `.lifecycle(.willResignActive)` and cancel managed tasks.
+- Interactor owns runtime lifecycle and must not require a shared lifecycle action case in every feature action enum.
+- `activate()` should initialize interactor/router-owned runtime work when needed.
+- `deactivate()` must cancel managed tasks and release runtime work tied to the active session.
 - Long-running business effects are implemented in reducer effects, not inside Interactor.
 
 ## Non-Goals (v1)
