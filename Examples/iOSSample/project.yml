@@ -1,0 +1,30 @@
+name: iOSSample
+options:
+  deploymentTarget:
+    iOS: '17.0'
+packages:
+  ComposableRIBs:
+    path: ../..
+  swift-composable-architecture:
+    url: https://github.com/pointfreeco/swift-composable-architecture
+    exactVersion: 1.23.1
+targets:
+  iOSSample:
+    type: application
+    platform: iOS
+    sources:
+      - path: SampleApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hogumachu.ComposableRIBs.iOSSample
+        PRODUCT_NAME: iOSSample
+        SWIFT_VERSION: 6.0
+        INFOPLIST_FILE: SampleApp/App/Info.plist
+        TARGETED_DEVICE_FAMILY: 1,2
+    dependencies:
+      - package: ComposableRIBs
+        product: ComposableRIBs
+      - package: swift-composable-architecture
+        product: ComposableArchitecture
+    scheme:
+      testTargets: []
