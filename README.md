@@ -134,12 +134,14 @@ For a working iOS sample app (UIKit root + SwiftUI/TCA modules), see `Examples/i
 For a Search sample that uses protocol-based DI without `@Dependency`, see `Examples/SearchProtocolSample/README.md`.
 
 ## Contributing
-Before contributing, read `AGENTS.md`.
+Before contributing, read `CONTRIBUTING.md` and `AGENTS.md`.
 
 Contributor requirements include:
 - English-only contributor-facing writing
 - Clear documentation and intent-level source comments
 - Conventional Commit policy compliance
+- Pull requests must use `.github/PULL_REQUEST_TEMPLATE.md`
+- Issues should use `.github/ISSUE_TEMPLATE/`
 
 ## License
 This project is licensed under the MIT License.

@@ -21,6 +21,7 @@
 - Delegate-first upstream event channel is now implemented for the sample flow, with state-flag routing reduced to fallback guidance.
 - Sample router lifetime realignment completed: dismissible child/grandchild modules are now created on demand and released on close, with deinit-focused lifecycle regression coverage.
 - Phase 1 usage guides completed: module wiring and lifecycle bridge documentation are now published.
+- Phase 3 contributor workflow baseline completed with contribution guide and issue/PR templates.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -116,7 +117,7 @@ Reduce repetitive module wiring and enforce protocol-oriented boundaries so feat
 Finalize release discipline and repository hygiene required for reliable open-source collaboration.
 
 ### Deliverables
-1. [ ] Add contributor workflow documentation (issue/PR expectations and review quality gate).
+1. [x] Add contributor workflow documentation (issue/PR expectations and review quality gate).
 2. [ ] Define semantic versioning policy for v0.x.
 3. [ ] Document pre-release checklist and tag/release guidance.
 4. [ ] Ensure AGENTS rules are reflected in contributor-facing docs.

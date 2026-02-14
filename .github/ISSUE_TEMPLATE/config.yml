@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contribution Guide
+    url: https://github.com/hogumachu/ComposableRIBs/blob/main/CONTRIBUTING.md
+    about: Read the contribution workflow and review gates before opening issues or pull requests.
+  - name: Roadmap
+    url: https://github.com/hogumachu/ComposableRIBs/blob/main/docs/ROADMAP.md
+    about: Check current phase milestones and delivery status.

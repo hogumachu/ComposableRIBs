@@ -3,6 +3,11 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Phase 3 contributor workflow milestone completed:
+  - Added `CONTRIBUTING.md` with contributor workflow, review gates, validation commands, and architecture checklist.
+  - Added `.github/PULL_REQUEST_TEMPLATE.md` with roadmap/API/architecture/test/doc verification fields.
+  - Added issue templates under `.github/ISSUE_TEMPLATE/` for bug and feature intake quality.
+  - Synced `README.md` and `docs/ROADMAP.md` to reflect contributor workflow baseline completion.
 - Phase 1 usage-guide milestone completed:
   - Added `docs/MODULE_WIRING_GUIDE.md` with builder-first wiring flow, protocol-first boundary rules, and router lifetime guidelines.
   - Added `docs/LIFECYCLE_BRIDGE_GUIDE.md` with interactor-owned lifecycle/cancellation model and delegate-first action-observation guidance.
@@ -81,9 +86,9 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 3 item #1: add contributor workflow documentation (issue/PR expectations and review quality gate).
-2. Then complete Phase 3 item #2: define semantic versioning policy for v0.x.
-3. Keep launch-router + delegate-first + protocol-first + deinit/lifecycle boundary tests updated as module samples evolve.
+1. Start Phase 3 item #2: define semantic versioning policy for v0.x.
+2. Then complete Phase 3 item #3: document pre-release checklist and tag/release guidance.
+3. Align contributor-facing docs so AGENTS governance rules are fully reflected for Phase 3 item #4.
 
 ## Known Blockers
 - `swift test` in this environment still does not represent iOS-only package execution reliably.
@@ -98,6 +103,9 @@ This file is the handoff source of truth for continuing work without relying on 
 - Usage guide presence and references:
   - `ls -la docs/MODULE_WIRING_GUIDE.md docs/LIFECYCLE_BRIDGE_GUIDE.md`
   - `rg -n "MODULE_WIRING_GUIDE|LIFECYCLE_BRIDGE_GUIDE" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`
+- Contributor workflow docs and template presence:
+  - `ls -la CONTRIBUTING.md .github/PULL_REQUEST_TEMPLATE.md .github/ISSUE_TEMPLATE`
+  - `rg -n "CONTRIBUTING|PULL_REQUEST_TEMPLATE|ISSUE_TEMPLATE" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`
 - License/changelog presence and references:
   - `ls -la LICENSE CHANGELOG.md`
   - `rg -n "LICENSE|CHANGELOG" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`
