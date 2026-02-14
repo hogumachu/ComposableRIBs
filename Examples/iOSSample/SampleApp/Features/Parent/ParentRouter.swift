@@ -8,7 +8,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
   private let childBuilder: any ChildBuildable
   private var childRouter: (any ChildRouting)?
   private weak var navigationController: UINavigationController?
-  private var isChildAttached = false
 
   init(
     interactor: TCAInteractor<ParentFeature>,
@@ -39,7 +38,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 
   private func presentChildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
-    guard !isChildAttached else { return }
     guard childRouter == nil else { return }
     let childDependency = ParentComponent(dependency: dependency)
     let childRouter = childBuilder.build(with: childDependency)
@@ -48,13 +46,11 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
     })
     self.childRouter = childRouter
     attachActivateAndPush(childRouter, in: navigationController, animated: animated)
-    isChildAttached = true
   }
 
   private func dismissChildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
     guard let childRouter else { return }
-    guard isChildAttached else { return }
 
     childRouter.detachGrandchildIfNeeded(animated: animated)
     deactivateDetachAndPop(
@@ -63,7 +59,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
       to: viewController,
       animated: animated
     )
-    isChildAttached = false
     self.childRouter = nil
   }
 }
