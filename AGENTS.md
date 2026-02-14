@@ -59,3 +59,41 @@
   - required documentation updates are missing,
   - complex logic lacks intent-level comments,
   - or contributor-facing text is not written in English.
+
+## Commit Message Policy
+
+- All commit messages must be written in English.
+- Use Conventional Commits format for every commit:
+  - `type(scope): subject`
+  - Examples:
+    - `feat(router): add child deduplication on attach`
+    - `fix(interactor): cancel managed tasks on deactivate`
+    - `docs(agents): add open-source writing policy`
+
+### Allowed Types
+- `feat`: new user-facing behavior
+- `fix`: bug fix or regression fix
+- `refactor`: structural change without behavior change
+- `test`: add/update tests
+- `docs`: documentation-only change
+- `chore`: tooling/build/maintenance updates
+- `ci`: CI workflow changes
+
+### Subject Rules
+- Use imperative mood (e.g., "add", "fix", "remove").
+- Keep subject concise (recommended <= 72 characters).
+- Do not end the subject with a period.
+- The subject should describe what changed, not why it was difficult.
+
+### Body Rules
+- Add a body when context is needed.
+- In the body, explain:
+  - why the change is needed,
+  - key design decisions/tradeoffs,
+  - testing or verification performed.
+- For behavior changes, include a short verification note.
+
+### Commit Hygiene
+- Keep each commit focused on one logical change.
+- Avoid mixing refactor + behavior changes + docs in one commit unless tightly coupled.
+- Ensure commit content matches the commit type and subject.
