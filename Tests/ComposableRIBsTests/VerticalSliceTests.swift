@@ -194,6 +194,20 @@ struct VerticalSliceTests {
       super.init()
       attachChild(child)
     }
+
+    @MainActor
+    func activateTree() {
+      interactor.activate()
+      child.interactor.activate()
+      child.grandchild.interactor.activate()
+    }
+
+    @MainActor
+    func deactivateTree() {
+      child.grandchild.interactor.deactivate()
+      child.interactor.deactivate()
+      interactor.deactivate()
+    }
   }
 
   final class MidRouter: BaseRouter {
@@ -317,5 +331,68 @@ struct VerticalSliceTests {
     }
 
     #expect(await probe.cancelled)
+  }
+
+  @Test("Repeated child route intent does not duplicate attachment")
+  func repeatedChildAttachIntentDeduplicates() {
+    let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
+
+    router.attachChild(router.child)
+    router.attachChild(router.child)
+
+    #expect(router.children.count == 1)
+    #expect(ObjectIdentifier(router.children[0]) == ObjectIdentifier(router.child))
+  }
+
+  @Test("Detach order is safe when grandchild already detached")
+  func detachOrderIsSafeForDetachedGrandchild() {
+    let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
+
+    router.child.detachChild(router.child.grandchild)
+    router.detachChild(router.child)
+    router.child.detachChild(router.child.grandchild)
+
+    #expect(router.children.isEmpty)
+    #expect(router.child.children.isEmpty)
+  }
+
+  @Test("Deactivate parent cascades child/grandchild lifecycle to inactive")
+  func deactivateCascadeKeepsNestedInactive() {
+    let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
+    let root = ViewStore(router.store, observe: { $0 })
+    let mid = ViewStore(router.child.store, observe: { $0 })
+    let leaf = ViewStore(router.child.grandchild.store, observe: { $0 })
+
+    router.activateTree()
+    #expect(root.isActive)
+    #expect(mid.isActive)
+    #expect(leaf.isActive)
+
+    router.deactivateTree()
+
+    #expect(!root.isActive)
+    #expect(!mid.isActive)
+    #expect(!leaf.isActive)
+  }
+
+  @Test("Reactivation after nested teardown restores expected lifecycle sequence")
+  func reactivationAfterTeardownRestoresSequence() {
+    let router = RootBuilder().build(with: RootAppDependency(initialValue: 1, internalOnly: "secret"))
+    let root = ViewStore(router.store, observe: { $0 })
+    let mid = ViewStore(router.child.store, observe: { $0 })
+    let leaf = ViewStore(router.child.grandchild.store, observe: { $0 })
+
+    router.activateTree()
+    router.deactivateTree()
+
+    #expect(!root.isActive)
+    #expect(!mid.isActive)
+    #expect(!leaf.isActive)
+
+    router.activateTree()
+
+    #expect(root.isActive)
+    #expect(mid.isActive)
+    #expect(leaf.isActive)
   }
 }
