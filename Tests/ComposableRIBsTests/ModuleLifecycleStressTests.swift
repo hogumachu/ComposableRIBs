@@ -13,12 +13,8 @@ struct ModuleLifecycleStressTests {
       var isActive = false
     }
 
-    enum Action: Equatable, LifecycleActionConvertible {
+    enum Action: Equatable, LifecycleCaseActionConvertible {
       case lifecycle(InteractorLifecycleAction)
-
-      static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-        .lifecycle(action)
-      }
     }
 
     var body: some ReducerOf<Self> {

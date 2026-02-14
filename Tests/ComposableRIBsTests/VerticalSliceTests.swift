@@ -61,13 +61,9 @@ struct VerticalSliceTests {
       var isActive = false
     }
 
-    enum Action: Equatable, LifecycleActionConvertible {
+    enum Action: Equatable, LifecycleCaseActionConvertible {
       case incrementButtonTapped
       case lifecycle(InteractorLifecycleAction)
-
-      static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-        .lifecycle(action)
-      }
     }
 
     var body: some ReducerOf<Self> {
@@ -160,12 +156,8 @@ struct VerticalSliceTests {
       var value: Int
     }
 
-    enum Action: Equatable, LifecycleActionConvertible {
+    enum Action: Equatable, LifecycleCaseActionConvertible {
       case lifecycle(InteractorLifecycleAction)
-
-      static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-        .lifecycle(action)
-      }
     }
 
     var body: some ReducerOf<Self> {

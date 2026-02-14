@@ -15,13 +15,9 @@ struct TCAInteractorTests {
       var tickCount = 0
     }
 
-    enum Action: Equatable, LifecycleActionConvertible {
+    enum Action: Equatable, LifecycleCaseActionConvertible {
       case lifecycle(InteractorLifecycleAction)
       case tick
-
-      static func makeLifecycleAction(_ action: InteractorLifecycleAction) -> Self {
-        .lifecycle(action)
-      }
     }
 
     var body: some ReducerOf<Self> {

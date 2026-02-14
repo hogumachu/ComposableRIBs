@@ -65,6 +65,28 @@ struct ArchitectureBoundaryTests {
     }
   }
 
+  @Test("Sample module wiring avoids concrete child router leakage across boundaries")
+  func sampleBuildersUseRoutingContractsAcrossBoundaries() throws {
+    let root = try repositoryRoot()
+    let parentBuilder = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Parent/ParentBuilder.swift"
+    )
+    let childBuilder = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Child/ChildBuilder.swift"
+    )
+
+    let parentContents = try String(contentsOf: parentBuilder, encoding: .utf8)
+    let childContents = try String(contentsOf: childBuilder, encoding: .utf8)
+
+    #expect(parentContents.contains("any ChildBuildable"))
+    #expect(parentContents.contains("any ParentRouting"))
+    #expect(!parentContents.contains("ChildRouter"))
+
+    #expect(childContents.contains("any GrandchildBuildable"))
+    #expect(childContents.contains("any ChildRouting"))
+    #expect(!childContents.contains("GrandchildRouter"))
+  }
+
   private func repositoryRoot() throws -> URL {
     let fileURL = URL(fileURLWithPath: #filePath)
     // Tests/ComposableRIBsTests/<file>.swift -> repository root
