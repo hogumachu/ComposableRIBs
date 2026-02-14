@@ -66,12 +66,32 @@ public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, 
 
 public extension TCAInteractor where Feature.Action: DelegateActionExtractable {
   /// Registers a delegate-event observer for actions that expose optional delegate events.
+  ///
+  /// This API is kept for v0.x compatibility. Prefer case-path extraction by calling
+  /// `observeDelegateEvents(for:_:)` when action enums have a `case delegate(...)`.
   @discardableResult
   func observeDelegateEvents(
     _ observer: @escaping (Feature.Action.Delegate) -> Void
   ) -> UUID? {
     observeActions { action in
       guard let event = action.delegateEvent else { return }
+      observer(event)
+    }
+  }
+}
+
+public extension TCAInteractor where Feature.Action: CasePathable {
+  /// Registers a delegate-event observer using a delegate case path.
+  ///
+  /// This is the preferred delegate extraction path because it avoids per-action
+  /// boilerplate like `var delegateEvent`.
+  @discardableResult
+  func observeDelegateEvents<Delegate>(
+    for delegateCase: CaseKeyPath<Feature.Action, Delegate>,
+    _ observer: @escaping (Delegate) -> Void
+  ) -> UUID? {
+    observeActions { action in
+      guard let event = action[case: delegateCase] else { return }
       observer(event)
     }
   }

@@ -11,7 +11,8 @@ struct ChildFeature {
     var seedValue: Int
   }
 
-  enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
+  @CasePathable
+  enum Action: Equatable, LifecycleCaseActionConvertible {
     case lifecycle(InteractorLifecycleAction)
     case grandchildButtonTapped
     case grandchildPresentationChanged(Bool)
@@ -22,11 +23,6 @@ struct ChildFeature {
     enum Delegate: Equatable {
       case showGrandchildRequested
       case closeRequested
-    }
-
-    var delegateEvent: Delegate? {
-      guard case let .delegate(event) = self else { return nil }
-      return event
     }
   }
 

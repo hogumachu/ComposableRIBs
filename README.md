@@ -17,6 +17,7 @@ ComposableRIBs is an iOS-focused library that combines TCA for UI and business l
 - Presentation state/action is TCA-owned; UIKit navigation side effects are router-owned.
 - Upstream cross-module intent is delegate-first (`Action.delegate(...)`) when parent coordination is needed.
 - Delegate channels are optional by default and should be introduced only where upstream signaling is required.
+- For delegate extraction, prefer case-path observation (`observeDelegateEvents(for: \.delegate, ...)`) over per-action boilerplate properties.
 
 ## Installation
 Add ComposableRIBs with Swift Package Manager:
@@ -98,7 +99,8 @@ This snippet is a conceptual starter to show lifecycle wiring, not a full produc
 - `TCAInteractor`: Forwards lifecycle events to reducer actions and owns managed task cancellation.
 - `LifecycleCaseActionConvertible`: Removes per-feature lifecycle forwarding boilerplate when action enums contain `case lifecycle(...)`.
 - `ActionObservingReducer` + `ActionRelay`: Forward reducer action streams to router/interactor observers without coupling views to routers.
-- `DelegateActionExtractable`: Optional contract for actions that expose upstream delegate events.
+- `TCAInteractor.observeDelegateEvents(for:_:)`: Preferred case-path delegate extraction API for upstream module intent.
+- `DelegateActionExtractable`: Legacy-compatible optional delegate extraction contract retained during v0.x migration.
 - `SwiftUIHostingRouter`: Centralizes store/interactor/view hosting and shared navigation lifecycle helpers.
 - Protocol-first boundary rule: parent-child composition must use dependency contracts instead of concrete parent types.
 

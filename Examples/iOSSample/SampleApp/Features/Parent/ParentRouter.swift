@@ -28,7 +28,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 
   override func bindState() {
     // Upstream navigation intent is delegate-first. Router maps delegate actions to UIKit transitions.
-    _ = tcaInteractor.observeDelegateEvents { [weak self] delegateEvent in
+    _ = tcaInteractor.observeDelegateEvents(for: \.delegate) { [weak self] delegateEvent in
       guard let self else { return }
       switch delegateEvent {
       case .showChildRequested:

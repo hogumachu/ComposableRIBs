@@ -13,7 +13,8 @@ struct DelegateActionBridgeTests {
       var count = 0
     }
 
-    enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
+    @CasePathable
+    enum Action: Equatable, LifecycleCaseActionConvertible {
       case lifecycle(InteractorLifecycleAction)
       case incrementTapped
       case delegate(Delegate)
@@ -22,10 +23,6 @@ struct DelegateActionBridgeTests {
         case incrementTapped
       }
 
-      var delegateEvent: Delegate? {
-        guard case let .delegate(event) = self else { return nil }
-        return event
-      }
     }
 
     var body: some ReducerOf<Self> {
@@ -56,6 +53,38 @@ struct DelegateActionBridgeTests {
     }
   }
 
+  @Reducer
+  struct LegacyDelegateFeature {
+    @ObservableState
+    struct State: Equatable {}
+
+    enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
+      case lifecycle(InteractorLifecycleAction)
+      case emit
+      case delegate(Delegate)
+
+      enum Delegate: Equatable {
+        case emitted
+      }
+
+      var delegateEvent: Delegate? {
+        guard case let .delegate(event) = self else { return nil }
+        return event
+      }
+    }
+
+    var body: some ReducerOf<Self> {
+      Reduce { _, action in
+        switch action {
+        case .emit:
+          return .send(.delegate(.emitted))
+        case .delegate, .lifecycle:
+          return .none
+        }
+      }
+    }
+  }
+
   @Test("ActionObservingReducer observes direct and internally sent actions")
   func actionObservingReducerObservesAllActions() {
     let relay = ActionRelay<DelegateFeature.Action>()
@@ -67,7 +96,7 @@ struct DelegateActionBridgeTests {
     let interactor = TCAInteractor<DelegateFeature>(store: store, actionRelay: relay)
 
     var observed: [DelegateFeature.Action.Delegate] = []
-    let token = interactor.observeDelegateEvents { observed.append($0) }
+    let token = interactor.observeDelegateEvents(for: \.delegate) { observed.append($0) }
 
     _ = store.send(.incrementTapped)
 
@@ -90,5 +119,27 @@ struct DelegateActionBridgeTests {
     _ = store.send(.noop)
 
     #expect(token == nil)
+  }
+
+  @Test("Legacy DelegateActionExtractable observation remains compatible in v0.x")
+  func legacyDelegateExtractionRemainsCompatible() {
+    let relay = ActionRelay<LegacyDelegateFeature.Action>()
+    let store = Store(initialState: LegacyDelegateFeature.State()) {
+      ActionObservingReducer(base: LegacyDelegateFeature()) { action in
+        relay.emit(action)
+      }
+    }
+    let interactor = TCAInteractor<LegacyDelegateFeature>(store: store, actionRelay: relay)
+
+    var observed: [LegacyDelegateFeature.Action.Delegate] = []
+    let token = interactor.observeDelegateEvents { observed.append($0) }
+
+    _ = store.send(.emit)
+
+    if let token {
+      interactor.removeActionObserver(token)
+    }
+
+    #expect(observed == [.emitted])
   }
 }

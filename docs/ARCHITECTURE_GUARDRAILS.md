@@ -50,6 +50,7 @@ Treat each feature module as an independently composable unit:
 - Router tree attach/detach.
 - Runtime wiring to child modules.
 - Consuming delegate events from action streams and translating them to push/pop side effects.
+- Prefer case-path delegate extraction in router/interactor wiring to avoid repeated extraction boilerplate.
 
 ## Sample Code Requirements
 The sample app must continuously demonstrate the intended architecture:
@@ -57,7 +58,7 @@ The sample app must continuously demonstrate the intended architecture:
 1. Parent knows child contracts, not child concrete internals.
 2. Views depend on stores, not routers.
 3. Upstream cross-module intent is delegate-first (`Action.delegate(...)`), with state flags as fallback only.
-4. Routers execute UIKit navigation from reducer/interactor delegate-event handling.
+4. Routers execute UIKit navigation from reducer/interactor delegate-event handling, preferably via case-path delegate extraction.
 5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
 
 ## Enforcement

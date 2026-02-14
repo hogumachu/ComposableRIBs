@@ -10,7 +10,8 @@ struct GrandchildFeature {
     var title: String
   }
 
-  enum Action: Equatable, LifecycleCaseActionConvertible, DelegateActionExtractable {
+  @CasePathable
+  enum Action: Equatable, LifecycleCaseActionConvertible {
     case lifecycle(InteractorLifecycleAction)
     case closeTapped
     case closeRequestChanged(Bool)
@@ -18,11 +19,6 @@ struct GrandchildFeature {
 
     enum Delegate: Equatable {
       case closeRequested
-    }
-
-    var delegateEvent: Delegate? {
-      guard case let .delegate(event) = self else { return nil }
-      return event
     }
   }
 

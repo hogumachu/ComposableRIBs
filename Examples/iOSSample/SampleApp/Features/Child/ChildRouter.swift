@@ -36,7 +36,7 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   }
 
   override func bindState() {
-    _ = tcaInteractor.observeDelegateEvents { [weak self] delegateEvent in
+    _ = tcaInteractor.observeDelegateEvents(for: \.delegate) { [weak self] delegateEvent in
       guard let self else { return }
       switch delegateEvent {
       case .showGrandchildRequested:

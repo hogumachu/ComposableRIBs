@@ -107,6 +107,9 @@ struct ArchitectureBoundaryTests {
     #expect(parentContents.contains("observeDelegateEvents"))
     #expect(childContents.contains("observeDelegateEvents"))
     #expect(grandchildContents.contains("observeDelegateEvents"))
+    #expect(parentContents.contains("for: \\.delegate"))
+    #expect(childContents.contains("for: \\.delegate"))
+    #expect(grandchildContents.contains("for: \\.delegate"))
 
     let disallowedTokens = [
       "viewStore.publisher.showChild",

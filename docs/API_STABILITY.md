@@ -19,10 +19,10 @@ This document defines the current public API boundary, intended audience, and st
 | `InteractorLifecycleAction` | `public enum` | `public enum` | `evolving-v0x` | External consumers | Bridge event shape may evolve with lifecycle ergonomics. |
 | `LifecycleActionConvertible` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Bridge mapping contract may evolve before 1.0. |
 | `LifecycleCaseActionConvertible` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Boilerplate-reduction helper for lifecycle action enums. |
-| `DelegateActionExtractable` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Optional delegate extraction contract for upstream module intent events. |
+| `DelegateActionExtractable` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Legacy-compatible delegate extraction contract; retained during v0.x migration to case-path observation. |
 | `ActionRelay` | `public final class` | `public final class` | `evolving-v0x` | External consumers | Action-stream relay used by interactor/router observation paths. |
 | `ActionObservingReducer` | `public struct` | `public struct` | `evolving-v0x` | External consumers | Reducer wrapper that forwards all processed actions to observers. |
-| `TCAInteractor` | `open class` | `public final class` | `evolving-v0x` | External consumers | Lifecycle bridge remains public; customization surface is intentionally narrowed for now. |
+| `TCAInteractor` | `open class` | `public final class` | `evolving-v0x` | External consumers | Lifecycle bridge remains public; includes preferred case-path delegate observation API (`observeDelegateEvents(for:_:)`). |
 | `RoutableViewControlling` | `public protocol` | `public protocol` | `evolving-v0x` | External consumers | Unifies view-controller backed routing contracts. |
 | `SwiftUIHostingRouter` | `open class` | `open class` | `evolving-v0x` | External consumers | Shared SwiftUI/UIKit hosting base for router ergonomics. |
 
