@@ -15,6 +15,7 @@
 - Phase 1 sample bootstrap is in place with UIKit root hosting SwiftUI and a Parent -> Child -> Grandchild flow.
 - Sample realignment completed: views/reducers use pure TCA patterns while UIKit routers own push/pop navigation and module attach/detach.
 - Protocol-first architecture guardrails are now documented with compile-oriented boundary tests.
+- Phase 2 item #1 completed: MIT license and changelog baseline are now in place.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -79,7 +80,7 @@ Make the library easier to evaluate and adopt through realistic examples, strong
 Finalize release discipline and repository hygiene required for reliable open-source collaboration.
 
 ### Deliverables
-1. [ ] Add `LICENSE` and `CHANGELOG.md`.
+1. [x] Add `LICENSE` and `CHANGELOG.md`.
 2. [ ] Add contributor workflow documentation (issue/PR expectations and review quality gate).
 3. [ ] Define semantic versioning policy for v0.x.
 4. [ ] Document pre-release checklist and tag/release guidance.
