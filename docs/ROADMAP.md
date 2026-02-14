@@ -15,7 +15,9 @@
 - Phase 1 sample bootstrap is in place with UIKit root hosting SwiftUI and a Parent -> Child -> Grandchild flow.
 - Sample realignment completed: views/reducers use pure TCA patterns while UIKit routers own push/pop navigation and module attach/detach.
 - Protocol-first architecture guardrails are now documented with compile-oriented boundary tests.
-- Phase 2 item #1 completed: MIT license and changelog baseline are now in place.
+- Roadmap priority updated: protocol-first abstraction and boilerplate reduction now precede open-source process hardening.
+- License and changelog baseline are maintained as completed readiness artifacts and carried into later release-governance phase.
+- Phase 2 abstraction milestone completed: protocol-first module contracts and shared hosting/lifecycle boilerplate reductions are validated.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -75,32 +77,59 @@ Make the library easier to evaluate and adopt through realistic examples, strong
 - Risk: integration tests become flaky under concurrency stress.
   Mitigation: isolate shared state, keep deterministic scheduling where possible, and document known limitations.
 
-## Phase 2 — Stability and Open-Source Readiness (v0.3.0 target)
+## Phase 2 — Protocol-First Abstraction and Ergonomics (v0.3.0 target)
+### Objective
+Reduce repetitive module wiring and enforce protocol-oriented boundaries so feature modules remain abstract, composable, and decoupled.
+
+### Deliverables
+1. [x] Enforce protocol-first routing/building contracts for module boundaries (no parent-child concrete type coupling).
+2. [x] Add additive default/base abstractions for router hosting and lifecycle action mapping.
+3. [x] Migrate sample app module wiring to contract-driven boundaries using the new abstractions.
+4. [x] Validate boilerplate reduction with an explicit checklist and sample before/after simplification notes.
+5. [x] Add compile and integration tests covering abstraction invariants and lifecycle/navigation helper behavior.
+
+### Acceptance Criteria
+1. Parent/child and child/grandchild boundaries are expressed through protocol contracts only.
+2. Repeated router/store/interactor hosting boilerplate is consolidated into shared abstractions.
+3. Sample still demonstrates UIKit-owned navigation and TCA-owned state/action responsibilities.
+4. Abstraction behavior is covered by compile-oriented and integration tests that pass in CI.
+5. No breaking API changes are introduced while improving developer ergonomics.
+
+### Dependencies
+- Phase 0 and 1 outputs (validated sample flow and reliable lifecycle/cancellation tests).
+
+### Risks / Mitigations
+- Risk: abstraction additions may unintentionally hide navigation side effects.
+  Mitigation: keep explicit router-owned transition methods and test lifecycle + navigation sync paths.
+- Risk: protocolization without boundaries can still leak concrete types in builders.
+  Mitigation: add compile-oriented boundary checks for builder and router contracts.
+
+## Phase 3 — Stability and Open-Source Readiness (v0.4.0 target)
 ### Objective
 Finalize release discipline and repository hygiene required for reliable open-source collaboration.
 
 ### Deliverables
-1. [x] Add `LICENSE` and `CHANGELOG.md`.
-2. [ ] Add contributor workflow documentation (issue/PR expectations and review quality gate).
-3. [ ] Define semantic versioning policy for v0.x.
-4. [ ] Document pre-release checklist and tag/release guidance.
-5. [ ] Ensure AGENTS rules are reflected in contributor-facing docs.
+1. [ ] Add contributor workflow documentation (issue/PR expectations and review quality gate).
+2. [ ] Define semantic versioning policy for v0.x.
+3. [ ] Document pre-release checklist and tag/release guidance.
+4. [ ] Ensure AGENTS rules are reflected in contributor-facing docs.
+5. [x] Keep `LICENSE` and `CHANGELOG.md` maintained as project baselines.
 
 ### Acceptance Criteria
-1. Repository includes standard legal and release-tracking files.
-2. Contributors can follow documented workflow without tribal knowledge.
-3. Versioning and release steps are explicit and repeatable.
-4. Pre-release checks cover docs, tests, and API-impact review.
-5. Governance rules and contributor docs are aligned without contradiction.
+1. Contributors can follow documented workflow without tribal knowledge.
+2. Versioning and release steps are explicit and repeatable.
+3. Pre-release checks cover docs, tests, and API-impact review.
+4. Governance rules and contributor docs are aligned without contradiction.
+5. Release discipline is documented independently from implementation details.
 
 ### Dependencies
-- Phase 0 and 1 outputs (stable docs baseline, validated examples, reliable tests).
+- Completed Phase 2 abstraction work and stable contributor-facing examples.
 
 ### Risks / Mitigations
 - Risk: governance standards exist but are not enforced consistently.
   Mitigation: add explicit review checklist items and enforce in PR reviews.
 - Risk: release process remains implicit.
-  Mitigation: codify release playbook and use it for each v0.x cut.
+  Mitigation: codify release playbook and use it for each tagged release.
 
 ## Out of Scope for v0.x
 - Support for non-iOS platforms.
