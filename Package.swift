@@ -31,10 +31,19 @@ let package = Package(
       ]
     ),
     .target(
+      name: "ComposableRIBsUI",
+      dependencies: [
+        "ComposableRIBsCore",
+        "ComposableRIBsTCA",
+        .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+      ]
+    ),
+    .target(
       name: "ComposableRIBs",
       dependencies: [
         "ComposableRIBsCore",
-        "ComposableRIBsTCA"
+        "ComposableRIBsTCA",
+        "ComposableRIBsUI"
       ]
     ),
     .testTarget(
