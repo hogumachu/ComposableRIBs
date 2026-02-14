@@ -111,7 +111,7 @@ Bridge API (evolving in v0.x):
 - Lifecycle bridge ergonomics around `TCAInteractor`
 - Example composition patterns and integration guidance
 
-Compatibility note: minor breaking changes may occur before 1.0 and will be documented in changelog updates once `CHANGELOG.md` is introduced.
+Compatibility note: minor breaking changes may occur before 1.0 and will be documented in `CHANGELOG.md`.
 
 ## Testing
 Current test focus includes:
@@ -141,5 +141,7 @@ Contributor requirements include:
 - Clear documentation and intent-level source comments
 - Conventional Commit policy compliance
 
-## License (Planned)
-A license file is planned in the roadmap open-source readiness phase. The project does not declare a final license yet.
+## License
+This project is licensed under the MIT License.
+
+See `LICENSE` for license terms and `CHANGELOG.md` for v0.x change history.
