@@ -26,10 +26,9 @@ struct ChildBuilder: ChildBuildable {
   }
 
   func build(with dependency: any ChildDependency) -> any ChildRouting {
-    let interactor = TCAInteractor<ChildFeature>(
-      initialState: ChildFeature.State(seedValue: dependency.childSeedValue),
-      reducer: { ChildFeature() }
-    )
+    let interactor: TCAInteractor<ChildFeature> = TCAInteractor(initialState: ChildFeature.State(seedValue: dependency.childSeedValue)) {
+      ChildFeature()
+    }
 
     return ChildRouter(
       store: interactor.store,
