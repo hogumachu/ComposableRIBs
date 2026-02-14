@@ -3,6 +3,11 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Phase 1 integration edge/stress test hardening completed:
+  - Added new nested edge-case coverage in `Tests/ComposableRIBsTests/VerticalSliceTests.swift`
+  - Added stress scenarios in `Tests/ComposableRIBsTests/ModuleLifecycleStressTests.swift`
+  - Re-ran focused suites twice consecutively to confirm non-flaky outcomes
+  - Re-ran full package test suite on iOS simulator (`26 tests passed`)
 - Protocol-first architecture guardrails milestone completed:
   - Added governance guardrail rules and protocol-first review gate in `AGENTS.md`
   - Added architecture guardrails reference in `docs/ARCHITECTURE_GUARDRAILS.md`
@@ -30,8 +35,8 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 1 item #4: add edge-case integration tests for multi-module flows.
-2. Then proceed with Phase 1 item #5 concurrency/lifecycle stress scenarios.
+1. Start Phase 2 item #1: add `LICENSE` and `CHANGELOG.md`.
+2. Define initial v0.x changelog format and release-note discipline.
 3. Keep protocol-first compile gates updated as module samples evolve.
 
 ## Known Blockers
@@ -48,6 +53,10 @@ This file is the handoff source of truth for continuing work without relying on 
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
 - Architecture boundary tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ArchitectureBoundaryTests`
+- Vertical slice edge-case tests:
+  - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/VerticalSliceTests`
+- Lifecycle stress tests:
+  - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ModuleLifecycleStressTests`
 - iOS sample app build:
   - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 
