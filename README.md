@@ -96,11 +96,14 @@ This snippet is a conceptual starter to show lifecycle wiring, not a full produc
 Core API (stable in v0.x):
 - `Buildable`
 - `Routing`
+- `BaseRouter`
 - `Interactable`
 - `RIBComponent`
 - `RIBDependency`
 
 Bridge API (evolving in v0.x):
+- `InteractorLifecycleAction`
+- `LifecycleActionConvertible`
 - Lifecycle bridge ergonomics around `TCAInteractor`
 - Example composition patterns and integration guidance
 
@@ -121,6 +124,8 @@ swift test
 
 ## Roadmap
 See `/Users/sungjun.hong/develop/ComposableRIBs/docs/ROADMAP.md` for the v0.x delivery plan.
+
+For a symbol-by-symbol boundary and stability table, see `/Users/sungjun.hong/develop/ComposableRIBs/docs/API_STABILITY.md`.
 
 ## Contributing
 Before contributing, read `/Users/sungjun.hong/develop/ComposableRIBs/AGENTS.md`.

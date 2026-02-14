@@ -4,7 +4,9 @@ import Foundation
 
 @MainActor
 /// Bridges RIB lifecycle hooks into TCA actions and owns task cancellation at deactivation.
-open class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.Action: LifecycleActionConvertible {
+///
+/// Stability: evolving-v0x
+public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.Action: LifecycleActionConvertible {
   public let store: StoreOf<Feature>
 
   /// Tracks long-running tasks started while active so they can be cancelled deterministically.
@@ -14,11 +16,11 @@ open class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.
     self.store = store
   }
 
-  open func activate() {
+  public func activate() {
     _ = store.send(.makeLifecycleAction(.didBecomeActive))
   }
 
-  open func deactivate() {
+  public func deactivate() {
     _ = store.send(.makeLifecycleAction(.willResignActive))
     // Align with RIB lifecycle semantics: stop all interactor-owned runtime work.
     cancelManagedTasks()
@@ -26,14 +28,14 @@ open class TCAInteractor<Feature>: Interactable where Feature: Reducer, Feature.
 
   @discardableResult
   /// Registers a task to be cancelled automatically when the interactor deactivates.
-  open func manage(_ task: Task<Void, Never>) -> Task<Void, Never> {
+  public func manage(_ task: Task<Void, Never>) -> Task<Void, Never> {
     pruneCancelledTasks()
     managedTasks[UUID()] = task
     return task
   }
 
   /// Cancels and clears all currently managed tasks.
-  open func cancelManagedTasks() {
+  public func cancelManagedTasks() {
     for task in managedTasks.values {
       task.cancel()
     }

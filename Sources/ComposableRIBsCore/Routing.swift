@@ -1,4 +1,6 @@
 /// Router contract for managing module tree composition.
+///
+/// Stability: stable-v0x
 public protocol Routing: AnyObject {
   /// Child routers currently attached to this router.
   var children: [any Routing] { get }
@@ -12,6 +14,8 @@ public protocol Routing: AnyObject {
 }
 
 /// Default router implementation with child attachment safety.
+///
+/// Stability: stable-v0x
 open class BaseRouter: Routing {
   public private(set) var children: [any Routing] = []
 
