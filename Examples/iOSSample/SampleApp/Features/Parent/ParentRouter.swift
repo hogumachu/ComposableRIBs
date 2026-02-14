@@ -4,16 +4,20 @@ import UIKit
 
 @MainActor
 final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, ParentRouting {
-  private let childRouter: any ChildRouting
+  private let dependency: any ParentDependency
+  private let childBuilder: any ChildBuildable
+  private var childRouter: (any ChildRouting)?
   private weak var navigationController: UINavigationController?
   private var isChildAttached = false
 
   init(
     store: StoreOf<ParentFeature>,
     interactor: TCAInteractor<ParentFeature>,
-    childRouter: any ChildRouting
+    dependency: any ParentDependency,
+    childBuilder: any ChildBuildable
   ) {
-    self.childRouter = childRouter
+    self.dependency = dependency
+    self.childBuilder = childBuilder
     super.init(store: store, interactor: interactor) {
       ParentView(store: store)
     }
@@ -21,9 +25,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 
   func bind(navigationController: UINavigationController) {
     self.navigationController = navigationController
-    childRouter.bind(navigationController: navigationController, onCloseRequested: { [weak self] in
-      self?.dismissChildIfNeeded(animated: true)
-    })
   }
 
   override func bindState() {
@@ -40,6 +41,13 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
   private func presentChildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
     guard !isChildAttached else { return }
+    guard childRouter == nil else { return }
+    let childDependency = ParentComponent(dependency: dependency)
+    let childRouter = childBuilder.build(with: childDependency)
+    childRouter.bind(navigationController: navigationController, onCloseRequested: { [weak self] in
+      self?.dismissChildIfNeeded(animated: true)
+    })
+    self.childRouter = childRouter
     attachActivateAndPush(childRouter, in: navigationController, animated: animated)
     isChildAttached = true
     _ = store.send(.childPresentationChanged(true))
@@ -47,6 +55,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 
   private func dismissChildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
+    guard let childRouter else { return }
     guard isChildAttached else { return }
 
     childRouter.detachGrandchildIfNeeded(animated: animated)
@@ -57,6 +66,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
       animated: animated
     )
     isChildAttached = false
+    self.childRouter = nil
     _ = store.send(.childPresentationChanged(false))
   }
 }

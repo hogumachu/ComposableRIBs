@@ -3,6 +3,15 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Sample router lifetime hardening milestone completed:
+  - Refactored sample Parent/Child routing to build dismissible child modules on demand.
+  - Removed long-lived strong child/grandchild router retention and release child references on close.
+  - Added architecture boundary checks for ephemeral child-router lifetime in `Tests/ComposableRIBsTests/ArchitectureBoundaryTests.swift`.
+  - Added lifecycle/deinit regression coverage in `Tests/ComposableRIBsTests/ModuleLifecycleStressTests.swift`.
+  - Validation passed:
+    - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ArchitectureBoundaryTests`
+    - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ModuleLifecycleStressTests`
+    - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 - LaunchRouter pattern realignment completed:
   - Added additive launch abstractions in `ComposableRIBsCore`: `LaunchRouting` and `BaseLaunchRouter`.
   - Added UIKit launch implementation in `ComposableRIBsUI`: `UIKitLaunchRouter`.
@@ -62,7 +71,7 @@ This file is the handoff source of truth for continuing work without relying on 
 ## Next Action
 1. Start Phase 3 item #1: add contributor workflow documentation (issue/PR expectations and review quality gate).
 2. Then complete Phase 3 item #2: define semantic versioning policy for v0.x.
-3. Keep launch-router + delegate-first + protocol-first boundary tests updated as module samples evolve.
+3. Keep launch-router + delegate-first + protocol-first + deinit/lifecycle boundary tests updated as module samples evolve.
 
 ## Known Blockers
 - `swift test` in this environment still does not represent iOS-only package execution reliably.

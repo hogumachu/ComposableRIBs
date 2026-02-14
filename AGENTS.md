@@ -40,6 +40,8 @@
 - Upstream cross-module intent should prefer `Action.delegate(...)` events when a module needs to notify its parent.
 - Delegate channels are optional by default; do not add delegate boilerplate to modules that do not need upstream signaling.
 - Reducers express intent and business state; routers execute UIKit navigation side effects.
+- Child routers must not be held as long-lived strong properties when they represent dismissible flows.
+- Dismissible child/grandchild modules should be built on demand and released (`nil`) after detach/pop unless a documented retention policy is required.
 - Module boundaries must remain microservice-style:
   - communicate through contracts (protocols + actions/state),
   - keep implementation details private to each module boundary.
@@ -60,6 +62,7 @@
   - view-router direct coupling is introduced,
   - upstream module coordination is implemented with state-flag polling when a delegate channel is feasible,
   - reducer code performs UIKit navigation side effects,
+  - dismissible child routers are retained as long-lived strong references without an explicit documented reason,
   - architecture behavior changes without corresponding docs updates.
 
 ## Open Source Readiness: Writing & Comment Policy

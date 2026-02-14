@@ -139,6 +139,30 @@ struct ArchitectureBoundaryTests {
     #expect(launchRouterContents.contains("parentRouting.bind(navigationController: navigationController)"))
   }
 
+  @Test("Sample routers use ephemeral child router lifetime instead of long-lived strong child references")
+  func sampleRoutersUseEphemeralChildLifetime() throws {
+    let root = try repositoryRoot()
+    let parentRouter = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Parent/ParentRouter.swift"
+    )
+    let childRouter = root.appendingPathComponent(
+      "Examples/iOSSample/SampleApp/Features/Child/ChildRouter.swift"
+    )
+
+    let parentContents = try String(contentsOf: parentRouter, encoding: .utf8)
+    let childContents = try String(contentsOf: childRouter, encoding: .utf8)
+
+    #expect(!parentContents.contains("private let childRouter"))
+    #expect(parentContents.contains("private let childBuilder"))
+    #expect(parentContents.contains("private var childRouter"))
+    #expect(parentContents.contains("childRouter = nil"))
+
+    #expect(!childContents.contains("private let grandchildRouter"))
+    #expect(childContents.contains("private let grandchildBuilder"))
+    #expect(childContents.contains("private var grandchildRouter"))
+    #expect(childContents.contains("grandchildRouter = nil"))
+  }
+
   private func repositoryRoot() throws -> URL {
     let fileURL = URL(fileURLWithPath: #filePath)
     // Tests/ComposableRIBsTests/<file>.swift -> repository root

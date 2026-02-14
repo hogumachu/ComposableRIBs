@@ -126,6 +126,31 @@ struct ModuleLifecycleStressTests {
     #expect(ObjectIdentifier(tree.child.children[0]) == ObjectIdentifier(tree.grandchild))
   }
 
+  @Test("Detached child router deinitializes while parent remains alive")
+  func detachedChildRouterDeinitializes() {
+    let parent = EphemeralParentRouter {
+      EphemeralChildRouter {
+        EphemeralGrandchildRouter()
+      }
+    }
+
+    weak var weakChild: EphemeralChildRouter?
+    weak var weakGrandchild: EphemeralGrandchildRouter?
+
+    parent.presentChildIfNeeded()
+    if let child = parent.childRouter {
+      child.presentGrandchildIfNeeded()
+      weakChild = child
+      weakGrandchild = child.grandchildRouter
+    }
+
+    #expect(parent.children.count == 1)
+    parent.dismissChildIfNeeded()
+    #expect(parent.children.isEmpty)
+    #expect(weakChild == nil)
+    #expect(weakGrandchild == nil)
+  }
+
   private func makeRouterTree() -> (parent: ParentRouter, child: ChildRouter, grandchild: GrandchildRouter) {
     let grandchild = GrandchildRouter(interactor: makeInteractor())
     let child = ChildRouter(interactor: makeInteractor(), grandchild: grandchild)
@@ -166,4 +191,53 @@ struct ModuleLifecycleStressTests {
       cancelledCount += 1
     }
   }
+
+  final class EphemeralParentRouter: BaseRouter {
+    private let makeChild: () -> EphemeralChildRouter
+    private(set) var childRouter: EphemeralChildRouter?
+
+    init(makeChild: @escaping () -> EphemeralChildRouter) {
+      self.makeChild = makeChild
+      super.init()
+    }
+
+    func presentChildIfNeeded() {
+      guard childRouter == nil else { return }
+      let child = makeChild()
+      childRouter = child
+      attachChild(child)
+    }
+
+    func dismissChildIfNeeded() {
+      guard let childRouter else { return }
+      childRouter.dismissGrandchildIfNeeded()
+      detachChild(childRouter)
+      self.childRouter = nil
+    }
+  }
+
+  final class EphemeralChildRouter: BaseRouter {
+    private let makeGrandchild: () -> EphemeralGrandchildRouter
+    private(set) var grandchildRouter: EphemeralGrandchildRouter?
+
+    init(makeGrandchild: @escaping () -> EphemeralGrandchildRouter) {
+      self.makeGrandchild = makeGrandchild
+      super.init()
+    }
+
+    func presentGrandchildIfNeeded() {
+      guard grandchildRouter == nil else { return }
+      let grandchild = makeGrandchild()
+      grandchildRouter = grandchild
+      attachChild(grandchild)
+    }
+
+    func dismissGrandchildIfNeeded() {
+      guard let grandchildRouter else { return }
+      detachChild(grandchildRouter)
+      self.grandchildRouter = nil
+    }
+  }
+
+  final class EphemeralGrandchildRouter: BaseRouter {}
 }

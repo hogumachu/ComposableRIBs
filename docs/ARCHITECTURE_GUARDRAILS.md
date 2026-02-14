@@ -51,6 +51,7 @@ Treat each feature module as an independently composable unit:
 - Runtime wiring to child modules.
 - Consuming delegate events from action streams and translating them to push/pop side effects.
 - Prefer case-path delegate extraction in router/interactor wiring to avoid repeated extraction boilerplate.
+- Use ephemeral child-router lifetime for dismissible flows: create on demand, detach/deactivate on close, then release references.
 
 ## Sample Code Requirements
 The sample app must continuously demonstrate the intended architecture:
@@ -62,6 +63,7 @@ The sample app must continuously demonstrate the intended architecture:
 5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
 6. Prefer default bridge conveniences (for example, `TCAInteractor(initialState:reducer:)`) to reduce repetitive builder wiring unless an exception is documented.
 7. App entry must use a launch router path (`SceneDelegate -> LaunchRouting.launch(from:)`) and `SceneDelegate` must retain the launch router strongly for runtime observer lifetime.
+8. Parent/child routers for dismissible flows must not keep long-lived strong child references after detach; close should make child lifetime collectible.
 
 ## Enforcement
 Guardrails are enforced through both documentation and compile-oriented tests:

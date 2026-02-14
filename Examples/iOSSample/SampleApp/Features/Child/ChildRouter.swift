@@ -4,7 +4,9 @@ import UIKit
 
 @MainActor
 final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRouting {
-  private let grandchildRouter: any GrandchildRouting
+  private let dependency: any ChildDependency
+  private let grandchildBuilder: any GrandchildBuildable
+  private var grandchildRouter: (any GrandchildRouting)?
   private weak var navigationController: UINavigationController?
   private var isGrandchildAttached = false
   private var onCloseRequested: (() -> Void)?
@@ -12,9 +14,11 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   init(
     store: StoreOf<ChildFeature>,
     interactor: TCAInteractor<ChildFeature>,
-    grandchildRouter: any GrandchildRouting
+    dependency: any ChildDependency,
+    grandchildBuilder: any GrandchildBuildable
   ) {
-    self.grandchildRouter = grandchildRouter
+    self.dependency = dependency
+    self.grandchildBuilder = grandchildBuilder
     super.init(store: store, interactor: interactor) {
       ChildView(store: store)
     }
@@ -26,9 +30,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   ) {
     self.navigationController = navigationController
     self.onCloseRequested = onCloseRequested
-    grandchildRouter.bind(onCloseRequested: { [weak self] in
-      self?.dismissGrandchildIfNeeded(animated: true)
-    })
   }
 
   func detachGrandchildIfNeeded(animated: Bool) {
@@ -50,6 +51,13 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   private func presentGrandchildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
     guard !isGrandchildAttached else { return }
+    guard grandchildRouter == nil else { return }
+    let grandchildDependency = ChildComponent(dependency: dependency)
+    let grandchildRouter = grandchildBuilder.build(with: grandchildDependency)
+    grandchildRouter.bind(onCloseRequested: { [weak self] in
+      self?.dismissGrandchildIfNeeded(animated: true)
+    })
+    self.grandchildRouter = grandchildRouter
     attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
     isGrandchildAttached = true
     _ = store.send(.grandchildPresentationChanged(true))
@@ -57,6 +65,7 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
 
   private func dismissGrandchildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
+    guard let grandchildRouter else { return }
     guard isGrandchildAttached else { return }
     deactivateDetachAndPop(
       grandchildRouter,
@@ -65,6 +74,7 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
       animated: animated
     )
     isGrandchildAttached = false
+    self.grandchildRouter = nil
     _ = store.send(.grandchildPresentationChanged(false))
   }
 }
