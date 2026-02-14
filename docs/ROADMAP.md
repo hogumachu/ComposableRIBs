@@ -10,18 +10,19 @@
 - Core primitives and TCA lifecycle bridge are bootstrapped.
 - Initial tests cover routing basics, lifecycle forwarding, cancellation behavior, and a vertical-slice wiring flow.
 - Project governance rules exist in `AGENTS.md` (documentation/comment policy, commit policy, iOS-only scope).
-- Public API maturity and contributor-facing documentation are still early-stage.
+- Public API maturity and contributor-facing documentation are now defined for v0.x.
+- Phase 0 (v0.1.0 target) is complete as of 2026-02-14.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
 Solidify the core architecture, clarify public API expectations, and establish baseline documentation and test confidence.
 
 ### Deliverables
-1. [ ] Add `README.md` with architecture boundary, iOS-only scope (UIKit/SwiftUI), and quick-start integration.
-2. [ ] Review naming and access control for `Buildable`, `Routing`, `Interactable`, `RIBComponent`, and `TCAInteractor`.
-3. [ ] Mark APIs as stable vs subject-to-change during v0.x in docs.
-4. [ ] Expand core test coverage for lifecycle forwarding, cancellation edge cases, router invariants, and dependency wiring.
-5. [ ] Verify package and docs consistently declare iOS-only support with no macOS promises.
+1. [x] Add `README.md` with architecture boundary, iOS-only scope (UIKit/SwiftUI), and quick-start integration.
+2. [x] Review naming and access control for `Buildable`, `Routing`, `Interactable`, `RIBComponent`, and `TCAInteractor`.
+3. [x] Mark APIs as stable vs subject-to-change during v0.x in docs.
+4. [x] Expand core test coverage for lifecycle forwarding, cancellation edge cases, router invariants, and dependency wiring.
+5. [x] Verify package and docs consistently declare iOS-only support with no macOS promises.
 
 ### Acceptance Criteria
 1. `README.md` enables first-time setup without requiring source-code deep dives.
