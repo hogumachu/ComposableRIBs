@@ -5,9 +5,9 @@ import ComposableArchitecture
 /// Stability: evolving-v0x
 public struct ActionObservingReducer<Base>: Reducer where Base: Reducer {
   private let base: Base
-  private let observer: @Sendable (Base.Action) -> Void
+  private let observer: (Base.Action) -> Void
 
-  public init(base: Base, observer: @escaping @Sendable (Base.Action) -> Void) {
+  public init(base: Base, observer: @escaping (Base.Action) -> Void) {
     self.base = base
     self.observer = observer
   }
