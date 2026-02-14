@@ -1,0 +1,30 @@
+name: SearchProtocolSample
+options:
+  deploymentTarget:
+    iOS: '17.0'
+packages:
+  ComposableRIBs:
+    path: ../..
+  swift-composable-architecture:
+    url: https://github.com/pointfreeco/swift-composable-architecture
+    exactVersion: 1.23.1
+targets:
+  SearchProtocolSample:
+    type: application
+    platform: iOS
+    sources:
+      - path: SearchProtocolSample
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hogumachu.ComposableRIBs.SearchProtocolSample
+        PRODUCT_NAME: SearchProtocolSample
+        SWIFT_VERSION: 6.0
+        INFOPLIST_FILE: SearchProtocolSample/App/Info.plist
+        TARGETED_DEVICE_FAMILY: 1,2
+    dependencies:
+      - package: ComposableRIBs
+        product: ComposableRIBs
+      - package: swift-composable-architecture
+        product: ComposableArchitecture
+    scheme:
+      testTargets: []

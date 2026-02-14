@@ -104,9 +104,9 @@ struct ArchitectureBoundaryTests {
     let childContents = try String(contentsOf: childRouter, encoding: .utf8)
     let grandchildContents = try String(contentsOf: grandchildRouter, encoding: .utf8)
 
-    #expect(parentContents.contains("observeDelegateEvents"))
-    #expect(childContents.contains("observeDelegateEvents"))
-    #expect(grandchildContents.contains("observeDelegateEvents"))
+    #expect(parentContents.contains("observeAction"))
+    #expect(childContents.contains("observeAction"))
+    #expect(grandchildContents.contains("observeAction"))
     #expect(parentContents.contains("for: \\.delegate"))
     #expect(childContents.contains("for: \\.delegate"))
     #expect(grandchildContents.contains("for: \\.delegate"))
@@ -122,6 +122,58 @@ struct ArchitectureBoundaryTests {
       #expect(!childContents.contains(token))
       #expect(!grandchildContents.contains(token))
     }
+  }
+
+  @Test("Search protocol sample uses protocol DI and avoids @Dependency macro")
+  func searchProtocolSampleUsesProtocolDependencyInjection() throws {
+    let root = try repositoryRoot()
+    let sampleRoot = root.appendingPathComponent("Examples/SearchProtocolSample/SearchProtocolSample")
+    let sharedPath = sampleRoot.appendingPathComponent("Shared")
+    let featuresPath = sampleRoot.appendingPathComponent("Features/Search")
+    let appPath = sampleRoot.appendingPathComponent("App")
+
+    let dependencyContents = try String(
+      contentsOf: sharedPath.appendingPathComponent("SearchDependencies.swift"),
+      encoding: .utf8
+    )
+    let serviceContents = try String(
+      contentsOf: sharedPath.appendingPathComponent("WeatherService.swift"),
+      encoding: .utf8
+    )
+    let builderContents = try String(
+      contentsOf: featuresPath.appendingPathComponent("SearchBuilder.swift"),
+      encoding: .utf8
+    )
+    let routerContents = try String(
+      contentsOf: featuresPath.appendingPathComponent("SearchRouter.swift"),
+      encoding: .utf8
+    )
+    let viewContents = try String(
+      contentsOf: featuresPath.appendingPathComponent("SearchView.swift"),
+      encoding: .utf8
+    )
+    let featureContents = try String(
+      contentsOf: featuresPath.appendingPathComponent("SearchFeature.swift"),
+      encoding: .utf8
+    )
+    let sceneDelegateContents = try String(
+      contentsOf: appPath.appendingPathComponent("SceneDelegate.swift"),
+      encoding: .utf8
+    )
+
+    #expect(serviceContents.contains("protocol WeatherServicing"))
+    #expect(dependencyContents.contains("protocol SearchDependency"))
+    #expect(builderContents.contains("mockService: dependency.mockWeatherService"))
+    #expect(builderContents.contains("liveService: dependency.liveWeatherService"))
+
+    #expect(!featureContents.contains("@Dependency("))
+    #expect(!viewContents.contains("@Dependency("))
+    #expect(!routerContents.contains("@Dependency("))
+    #expect(!routerContents.contains(".store.send("))
+    #expect(!viewContents.contains("let router:"))
+
+    #expect(sceneDelegateContents.contains("private var launchRouter: (any LaunchRouting)?"))
+    #expect(sceneDelegateContents.contains("launchRouter.launch(from: window)"))
   }
 
   @Test("SceneDelegate retains launch router and enters via launch(from:)")

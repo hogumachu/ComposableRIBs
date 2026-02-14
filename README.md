@@ -127,6 +127,7 @@ See `docs/ROADMAP.md` for the v0.x delivery plan.
 For a symbol-by-symbol boundary and stability table, see `docs/API_STABILITY.md`.
 For protocol-first architectural constraints and enforcement rules, see `docs/ARCHITECTURE_GUARDRAILS.md`.
 For a working iOS sample app (UIKit root + SwiftUI/TCA modules), see `Examples/iOSSample/README.md`.
+For a Search sample that uses protocol-based DI without `@Dependency`, see `Examples/SearchProtocolSample/README.md`.
 
 ## Contributing
 Before contributing, read `AGENTS.md`.
