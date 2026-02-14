@@ -53,7 +53,7 @@
   - `case delegate(Delegate)`
   - nested `enum Delegate { ... }`
 - Router and interactor should consume delegate events from action stream bridging rather than deriving transitions from `showX`/`shouldClose` flags.
-- Prefer case-path delegate extraction in routers/interactors (for example, `observeDelegateEvents(for: \.delegate, ...)`) to avoid repetitive per-action extraction boilerplate.
+- Prefer case-path delegate extraction in routers/interactors (for example, `observeAction(for: \.delegate, ...)`) to avoid repetitive per-action extraction boilerplate.
 - State-driven navigation flags are a fallback for modules that cannot reasonably introduce a delegate channel yet.
 
 ### Protocol-First Review Gate

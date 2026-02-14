@@ -11,8 +11,6 @@ struct ParentView: View {
           .font(.title2.bold())
         Text("Counter: \(store.counter)")
 
-        Text("Child Presented: \(store.isChildPresented ? "Yes" : "No")")
-
         Button("Show Child") {
           store.send(.childButtonTapped)
         }

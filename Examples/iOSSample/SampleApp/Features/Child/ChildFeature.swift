@@ -5,7 +5,6 @@ import ComposableRIBs
 struct ChildFeature {
   @ObservableState
   struct State: Equatable {
-    var isGrandchildPresented = false
     var ticks = 0
     var seedValue: Int
   }
@@ -15,7 +14,6 @@ struct ChildFeature {
     case viewAppeared
     case viewDisappeared
     case grandchildButtonTapped
-    case grandchildPresentationChanged(Bool)
     case closeTapped
     case tick
     case delegate(Delegate)
@@ -48,10 +46,6 @@ struct ChildFeature {
 
       case .grandchildButtonTapped:
         return .send(.delegate(.showGrandchildRequested))
-
-      case let .grandchildPresentationChanged(isPresented):
-        state.isGrandchildPresented = isPresented
-        return .none
 
       case .closeTapped:
         return .send(.delegate(.closeRequested))

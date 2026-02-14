@@ -7,7 +7,7 @@ final class GrandchildRouter: SwiftUIHostingRouter<GrandchildFeature, Grandchild
 
   init(interactor: TCAInteractor<GrandchildFeature>) {
     super.init(interactor: interactor) {
-      GrandchildView(store: interactor.store)
+      GrandchildView(store: $0)
     }
   }
 
@@ -16,12 +16,11 @@ final class GrandchildRouter: SwiftUIHostingRouter<GrandchildFeature, Grandchild
   }
 
   override func bindState() {
-    _ = tcaInteractor.observeDelegateEvents(for: \.delegate) { [weak self] delegateEvent in
+    observeAction(for: \.delegate) { [weak self] delegateEvent in
       guard let self else { return }
       switch delegateEvent {
       case .closeRequested:
         self.onCloseRequested?()
-        _ = self.store.send(.closeRequestChanged(false))
       }
     }
   }

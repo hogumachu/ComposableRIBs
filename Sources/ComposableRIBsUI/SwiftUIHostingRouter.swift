@@ -2,6 +2,7 @@ import ComposableArchitecture
 import ComposableRIBsCore
 import ComposableRIBsTCA
 import Combine
+import Foundation
 import SwiftUI
 import UIKit
 
@@ -20,10 +21,8 @@ public protocol RoutableViewControlling: Routing {
 @MainActor
 open class SwiftUIHostingRouter<Feature, RootView>: BaseRouter, RoutableViewControlling
 where Feature: Reducer, Feature.State: Equatable, RootView: View {
-  public let store: StoreOf<Feature>
+  private let tcaInteractor: TCAInteractor<Feature>
   public let interactor: any Interactable
-  public let tcaInteractor: TCAInteractor<Feature>
-  public let viewStore: ViewStoreOf<Feature>
   public let viewController: UIViewController
 
   /// Shared cancellation set for state binding subscriptions.
@@ -34,14 +33,12 @@ where Feature: Reducer, Feature.State: Equatable, RootView: View {
   /// This keeps router wiring consistent and avoids duplicated `store` plumbing in builders.
   public init(
     interactor: TCAInteractor<Feature>,
-    @ViewBuilder rootView: () -> RootView
+    @ViewBuilder rootView: (StoreOf<Feature>) -> RootView
   ) {
     let store = interactor.store
-    self.store = store
     self.tcaInteractor = interactor
     self.interactor = interactor
-    self.viewStore = ViewStore(store, observe: { $0 })
-    self.viewController = UIHostingController(rootView: rootView())
+    self.viewController = UIHostingController(rootView: rootView(store))
     super.init()
     bindState()
   }
@@ -72,5 +69,19 @@ where Feature: Reducer, Feature.State: Equatable, RootView: View {
     detachChild(child)
     guard navigationController.viewControllers.contains(child.viewController) else { return }
     navigationController.popToViewController(fallbackViewController, animated: animated)
+  }
+
+  /// Observes feature actions through a case path without exposing feature store or interactor internals.
+  @discardableResult
+  public func observeAction<ActionValue>(
+    for actionCase: CaseKeyPath<Feature.Action, ActionValue>,
+    _ observer: @escaping (ActionValue) -> Void
+  ) -> UUID? where Feature.Action: CasePathable {
+    tcaInteractor.observeDelegateEvents(for: actionCase, observer)
+  }
+
+  /// Removes an observer registered via `observeAction(for:_:)`.
+  public func removeActionObserver(_ token: UUID) {
+    tcaInteractor.removeActionObserver(token)
   }
 }

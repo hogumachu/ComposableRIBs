@@ -9,7 +9,6 @@ struct GrandchildView: View {
       Text("Grandchild")
         .font(.headline)
       Text(store.title)
-      Text("Close Requested: \(store.closeRequested ? "Yes" : "No")")
 
       Button("Close Grandchild") {
         store.send(.closeTapped)

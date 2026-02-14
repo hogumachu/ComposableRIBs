@@ -11,8 +11,6 @@ struct ChildView: View {
 
       Text("Seed: \(store.seedValue), ticks: \(store.ticks)")
 
-      Text("Grandchild Presented: \(store.isGrandchildPresented ? "Yes" : "No")")
-
       Button("Show Grandchild") {
         store.send(.grandchildButtonTapped)
       }

@@ -18,7 +18,7 @@ ComposableRIBs is an iOS-focused library that combines TCA for UI and business l
 - App entry should be launch-router driven (`SceneDelegate -> LaunchRouting.launch(from:)`) so root routing lifetime is retained explicitly.
 - Upstream cross-module intent is delegate-first (`Action.delegate(...)`) when parent coordination is needed.
 - Delegate channels are optional by default and should be introduced only where upstream signaling is required.
-- For delegate extraction, prefer case-path observation (`observeDelegateEvents(for: \.delegate, ...)`) over per-action boilerplate properties.
+- For delegate extraction in routers, prefer case-path observation (`observeAction(for: \.delegate, ...)`) over per-action boilerplate properties.
 
 ## Installation
 Add ComposableRIBs with Swift Package Manager:

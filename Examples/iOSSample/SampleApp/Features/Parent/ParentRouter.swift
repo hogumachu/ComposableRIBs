@@ -18,7 +18,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
     self.dependency = dependency
     self.childBuilder = childBuilder
     super.init(interactor: interactor) {
-      ParentView(store: interactor.store)
+      ParentView(store: $0)
     }
   }
 
@@ -28,7 +28,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 
   override func bindState() {
     // Upstream navigation intent is delegate-first. Router maps delegate actions to UIKit transitions.
-    _ = tcaInteractor.observeDelegateEvents(for: \.delegate) { [weak self] delegateEvent in
+    observeAction(for: \.delegate) { [weak self] delegateEvent in
       guard let self else { return }
       switch delegateEvent {
       case .showChildRequested:
@@ -49,7 +49,6 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
     self.childRouter = childRouter
     attachActivateAndPush(childRouter, in: navigationController, animated: animated)
     isChildAttached = true
-    _ = store.send(.childPresentationChanged(true))
   }
 
   private func dismissChildIfNeeded(animated: Bool) {
@@ -66,6 +65,5 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
     )
     isChildAttached = false
     self.childRouter = nil
-    _ = store.send(.childPresentationChanged(false))
   }
 }

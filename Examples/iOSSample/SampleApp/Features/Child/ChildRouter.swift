@@ -19,7 +19,7 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
     self.dependency = dependency
     self.grandchildBuilder = grandchildBuilder
     super.init(interactor: interactor) {
-      ChildView(store: interactor.store)
+      ChildView(store: $0)
     }
   }
 
@@ -36,7 +36,7 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   }
 
   override func bindState() {
-    _ = tcaInteractor.observeDelegateEvents(for: \.delegate) { [weak self] delegateEvent in
+    observeAction(for: \.delegate) { [weak self] delegateEvent in
       guard let self else { return }
       switch delegateEvent {
       case .showGrandchildRequested:
@@ -59,7 +59,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
     self.grandchildRouter = grandchildRouter
     attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
     isGrandchildAttached = true
-    _ = store.send(.grandchildPresentationChanged(true))
   }
 
   private func dismissGrandchildIfNeeded(animated: Bool) {
@@ -74,7 +73,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
     )
     isGrandchildAttached = false
     self.grandchildRouter = nil
-    _ = store.send(.grandchildPresentationChanged(false))
   }
 
 }
