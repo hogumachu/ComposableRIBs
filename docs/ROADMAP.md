@@ -20,6 +20,7 @@
 - Phase 2 abstraction milestone completed: protocol-first module contracts and shared hosting/lifecycle boilerplate reductions are validated.
 - Delegate-first upstream event channel is now implemented for the sample flow, with state-flag routing reduced to fallback guidance.
 - Sample router lifetime realignment completed: dismissible child/grandchild modules are now created on demand and released on close, with deinit-focused lifecycle regression coverage.
+- Phase 1 usage guides completed: module wiring and lifecycle bridge documentation are now published.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -56,7 +57,7 @@ Make the library easier to evaluate and adopt through realistic examples, strong
 ### Deliverables
 1. [x] Add sample app(s) demonstrating parent-child RIB flow on iOS.
 2. [x] Include both SwiftUI-first and UIKit-host integration examples (still iOS-only).
-3. [ ] Publish usage documentation: module wiring guide and lifecycle bridge guide.
+3. [x] Publish usage documentation: module wiring guide and lifecycle bridge guide.
 4. [x] Add edge-case integration tests for multi-module flows.
 5. [x] Add concurrency/lifecycle stress scenarios to detect cancellation and activation ordering issues.
 6. [x] Document and enforce protocol-first architecture guardrails across AGENTS/README/docs.

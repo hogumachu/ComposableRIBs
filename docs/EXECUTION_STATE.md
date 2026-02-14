@@ -3,6 +3,11 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Phase 1 usage-guide milestone completed:
+  - Added `docs/MODULE_WIRING_GUIDE.md` with builder-first wiring flow, protocol-first boundary rules, and router lifetime guidelines.
+  - Added `docs/LIFECYCLE_BRIDGE_GUIDE.md` with interactor-owned lifecycle/cancellation model and delegate-first action-observation guidance.
+  - Linked both guides from `README.md`.
+  - Synced roadmap status by marking Phase 1 item #3 complete in `docs/ROADMAP.md`.
 - Pure TCA feature-action lifecycle decoupling completed:
   - Removed `InteractorLifecycleAction`, `LifecycleActionConvertible`, and `LifecycleCaseActionConvertible` from `Sources/ComposableRIBsTCA`.
   - Updated `TCAInteractor` and `SwiftUIHostingRouter` so features no longer need a shared lifecycle action case.
@@ -90,6 +95,9 @@ This file is the handoff source of truth for continuing work without relying on 
 - Roadmap/status docs check:
   - `cat docs/ROADMAP.md`
   - `cat docs/EXECUTION_STATE.md`
+- Usage guide presence and references:
+  - `ls -la docs/MODULE_WIRING_GUIDE.md docs/LIFECYCLE_BRIDGE_GUIDE.md`
+  - `rg -n "MODULE_WIRING_GUIDE|LIFECYCLE_BRIDGE_GUIDE" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`
 - License/changelog presence and references:
   - `ls -la LICENSE CHANGELOG.md`
   - `rg -n "LICENSE|CHANGELOG" README.md docs/ROADMAP.md docs/EXECUTION_STATE.md`

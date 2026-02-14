@@ -121,6 +121,10 @@ Run tests with:
 swift test
 ```
 
+## Guides
+- `docs/MODULE_WIRING_GUIDE.md`: builder-first module composition, protocol-first boundaries, and dismissible child lifetime policy.
+- `docs/LIFECYCLE_BRIDGE_GUIDE.md`: interactor-owned runtime lifecycle, action observation, delegate-first upstream intent, and cancellation expectations.
+
 ## Roadmap
 See `docs/ROADMAP.md` for the v0.x delivery plan.
 
