@@ -14,6 +14,7 @@
 - Phase 0 (v0.1.0 target) is complete as of 2026-02-14.
 - Phase 1 sample bootstrap is in place with UIKit root hosting SwiftUI and a Parent -> Child -> Grandchild flow.
 - Sample realignment completed: views/reducers use pure TCA patterns while UIKit routers own push/pop navigation and module attach/detach.
+- Protocol-first architecture guardrails are now documented with compile-oriented boundary tests.
 
 ## Phase 0 — Foundation Hardening (v0.1.0 target)
 ### Objective
@@ -53,6 +54,8 @@ Make the library easier to evaluate and adopt through realistic examples, strong
 3. [ ] Publish usage documentation: module wiring guide and lifecycle bridge guide.
 4. [ ] Add edge-case integration tests for multi-module flows.
 5. [ ] Add concurrency/lifecycle stress scenarios to detect cancellation and activation ordering issues.
+6. [x] Document and enforce protocol-first architecture guardrails across AGENTS/README/docs.
+7. [x] Add compile-oriented boundary tests for concrete leakage prevention and view-router coupling checks.
 
 ### Acceptance Criteria
 1. Sample app builds and demonstrates modular navigation plus lifecycle transitions.

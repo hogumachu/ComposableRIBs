@@ -3,6 +3,11 @@
 This file is the handoff source of truth for continuing work without relying on chat history.
 
 ## Last Completed
+- Protocol-first architecture guardrails milestone completed:
+  - Added governance guardrail rules and protocol-first review gate in `AGENTS.md`
+  - Added architecture guardrails reference in `docs/ARCHITECTURE_GUARDRAILS.md`
+  - Updated `README.md` and `docs/ROADMAP.md` with protocol-first boundary policy
+  - Added compile-oriented boundary tests in `Tests/ComposableRIBsTests/ArchitectureBoundaryTests.swift`
 - iOS sample navigation realignment completed:
   - Views now depend on `StoreOf<Feature>` only (no router references in views)
   - Reducers now handle routing intents as state changes
@@ -25,9 +30,9 @@ This file is the handoff source of truth for continuing work without relying on 
 - None.
 
 ## Next Action
-1. Start Phase 1 item #3: publish module wiring guide and lifecycle bridge guide.
-2. Document the sample routing contract (state intent -> router side effect) in contributor-facing docs.
-3. Then move to Phase 1 item #4/#5 integration and stress test depth.
+1. Start Phase 1 item #4: add edge-case integration tests for multi-module flows.
+2. Then proceed with Phase 1 item #5 concurrency/lifecycle stress scenarios.
+3. Keep protocol-first compile gates updated as module samples evolve.
 
 ## Known Blockers
 - `swift test` in this environment still does not represent iOS-only package execution reliably.
@@ -41,6 +46,8 @@ This file is the handoff source of truth for continuing work without relying on 
   - `cat docs/EXECUTION_STATE.md`
 - iOS simulator package tests:
   - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test`
+- Architecture boundary tests:
+  - `xcodebuild -scheme ComposableRIBs -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' test -only-testing:ComposableRIBsTests/ArchitectureBoundaryTests`
 - iOS sample app build:
   - `xcodebuild -project Examples/iOSSample/iOSSample.xcodeproj -scheme iOSSample -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' build`
 

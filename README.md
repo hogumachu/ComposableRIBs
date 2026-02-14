@@ -12,6 +12,9 @@ ComposableRIBs is an iOS-focused library that combines TCA for UI and business l
 - TCA is responsible for `State`, `Action`, `Reducer`, and effect logic.
 - RIB-style structure in this repository is responsible for composition and runtime wiring through `Buildable`, `Routing`, `Interactable`, and `RIBComponent`.
 - `TCAInteractor` bridges both layers by forwarding lifecycle actions to reducers and cancelling managed runtime tasks when deactivating.
+- Protocol-first module contracts are mandatory.
+- Concrete dependency leakage across module boundaries is forbidden.
+- Presentation state/action is TCA-owned; UIKit navigation side effects are router-owned.
 
 ## Installation
 Add ComposableRIBs with Swift Package Manager:
@@ -91,6 +94,7 @@ This snippet is a conceptual starter to show lifecycle wiring, not a full produc
 - `RIBComponent`: Holds dependency contracts and limits concrete-type leakage across module boundaries.
 - `LifecycleActionConvertible`: Converts shared interactor lifecycle events into each feature's concrete action type.
 - `TCAInteractor`: Forwards lifecycle events to reducer actions and owns managed task cancellation.
+- Protocol-first boundary rule: parent-child composition must use dependency contracts instead of concrete parent types.
 
 ## API Maturity (v0.x)
 Core API (stable in v0.x):
@@ -123,13 +127,14 @@ swift test
 ```
 
 ## Roadmap
-See `/Users/sungjun.hong/develop/ComposableRIBs/docs/ROADMAP.md` for the v0.x delivery plan.
+See `docs/ROADMAP.md` for the v0.x delivery plan.
 
-For a symbol-by-symbol boundary and stability table, see `/Users/sungjun.hong/develop/ComposableRIBs/docs/API_STABILITY.md`.
-For a working iOS sample app (UIKit root + SwiftUI/TCA modules), see `/Users/sungjun.hong/develop/ComposableRIBs/Examples/iOSSample/README.md`.
+For a symbol-by-symbol boundary and stability table, see `docs/API_STABILITY.md`.
+For protocol-first architectural constraints and enforcement rules, see `docs/ARCHITECTURE_GUARDRAILS.md`.
+For a working iOS sample app (UIKit root + SwiftUI/TCA modules), see `Examples/iOSSample/README.md`.
 
 ## Contributing
-Before contributing, read `/Users/sungjun.hong/develop/ComposableRIBs/AGENTS.md`.
+Before contributing, read `AGENTS.md`.
 
 Contributor requirements include:
 - English-only contributor-facing writing

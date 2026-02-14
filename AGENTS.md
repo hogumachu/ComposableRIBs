@@ -31,6 +31,24 @@
 - Add higher-level convenience APIs only after core contracts are stable and tested.
 - Every feature touching lifecycle bridge must include regression tests.
 
+## Protocol-First Architecture Guardrails
+- Protocol-first module contracts are mandatory.
+- Child builder inputs must be dependency protocols, never parent concrete types.
+- Parent modules must not access child concrete internals beyond declared contracts.
+- Router references must not cross feature boundaries except through routing contracts.
+- SwiftUI views must depend on `StoreOf<Feature>` (or scoped stores), not router objects.
+- Reducers express navigation intent as state/action changes; routers execute UIKit navigation side effects.
+- Module boundaries must remain microservice-style:
+  - communicate through contracts (protocols + actions/state),
+  - keep implementation details private to each module boundary.
+
+### Protocol-First Review Gate
+- Reject changes when:
+  - concrete dependency leakage crosses module boundaries,
+  - view-router direct coupling is introduced,
+  - reducer code performs UIKit navigation side effects,
+  - architecture behavior changes without corresponding docs updates.
+
 ## Open Source Readiness: Writing & Comment Policy
 
 - This project is being prepared for open-source release.
