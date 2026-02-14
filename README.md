@@ -98,6 +98,7 @@ This snippet is a conceptual starter to show lifecycle wiring, not a full produc
 - `LifecycleActionConvertible`: Converts shared interactor lifecycle events into each feature's concrete action type.
 - `TCAInteractor`: Forwards lifecycle events to reducer actions and owns managed task cancellation.
 - `LifecycleCaseActionConvertible`: Removes per-feature lifecycle forwarding boilerplate when action enums contain `case lifecycle(...)`.
+- `TCAInteractor(initialState:reducer:)`: Preferred convenience initializer that removes repetitive store/relay wiring from builders.
 - `ActionObservingReducer` + `ActionRelay`: Forward reducer action streams to router/interactor observers without coupling views to routers.
 - `TCAInteractor.observeDelegateEvents(for:_:)`: Preferred case-path delegate extraction API for upstream module intent.
 - `DelegateActionExtractable`: Legacy-compatible optional delegate extraction contract retained during v0.x migration.

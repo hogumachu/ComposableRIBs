@@ -23,15 +23,11 @@ struct ParentBuilder: ParentBuildable {
   func build(with dependency: any ParentDependency) -> any ParentRouting {
     let childDependency = ParentComponent(dependency: dependency)
     let child = childBuilder.build(with: childDependency)
+    let interactor = TCAInteractor<ParentFeature>(
+      initialState: ParentFeature.State(counter: dependency.initialCounter),
+      reducer: { ParentFeature() }
+    )
 
-    let actionRelay = ActionRelay<ParentFeature.Action>()
-    let store = Store(initialState: ParentFeature.State(counter: dependency.initialCounter)) {
-      ActionObservingReducer(base: ParentFeature()) { action in
-        actionRelay.emit(action)
-      }
-    }
-    let interactor = TCAInteractor<ParentFeature>(store: store, actionRelay: actionRelay)
-
-    return ParentRouter(store: store, interactor: interactor, childRouter: child)
+    return ParentRouter(store: interactor.store, interactor: interactor, childRouter: child)
   }
 }

@@ -18,6 +18,23 @@ public final class TCAInteractor<Feature>: Interactable where Feature: Reducer, 
     self.actionRelay = actionRelay
   }
 
+  /// Convenience initializer that builds a store with action observation wiring.
+  ///
+  /// Preferred for builder composition to avoid repeating `ActionRelay` and
+  /// `ActionObservingReducer` setup in each module builder.
+  public convenience init(
+    initialState: @autoclosure () -> Feature.State,
+    @ReducerBuilder<Feature.State, Feature.Action> reducer: () -> Feature
+  ) {
+    let actionRelay = ActionRelay<Feature.Action>()
+    let store = Store(initialState: initialState()) {
+      ActionObservingReducer(base: reducer()) { action in
+        actionRelay.emit(action)
+      }
+    }
+    self.init(store: store, actionRelay: actionRelay)
+  }
+
   public func activate() {
     _ = store.send(.makeLifecycleAction(.didBecomeActive))
   }

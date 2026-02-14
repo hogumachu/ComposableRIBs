@@ -60,6 +60,7 @@ The sample app must continuously demonstrate the intended architecture:
 3. Upstream cross-module intent is delegate-first (`Action.delegate(...)`), with state flags as fallback only.
 4. Routers execute UIKit navigation from reducer/interactor delegate-event handling, preferably via case-path delegate extraction.
 5. Default abstractions are mandatory unless a module includes a documented exception with rationale.
+6. Prefer default bridge conveniences (for example, `TCAInteractor(initialState:reducer:)`) to reduce repetitive builder wiring unless an exception is documented.
 
 ## Enforcement
 Guardrails are enforced through both documentation and compile-oriented tests:

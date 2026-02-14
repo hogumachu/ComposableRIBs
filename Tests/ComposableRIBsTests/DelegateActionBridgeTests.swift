@@ -107,6 +107,27 @@ struct DelegateActionBridgeTests {
     #expect(observed == [.incrementTapped])
   }
 
+  @Test("TCAInteractor convenience init wires action observation")
+  func convenienceInitWiresActionObservation() {
+    let interactor = TCAInteractor<DelegateFeature>(
+      initialState: DelegateFeature.State(),
+      reducer: { DelegateFeature() }
+    )
+
+    var observed: [DelegateFeature.Action.Delegate] = []
+    let token = interactor.observeDelegateEvents(for: \.delegate) { observed.append($0) }
+
+    #expect(token != nil)
+
+    _ = interactor.store.send(.incrementTapped)
+
+    if let token {
+      interactor.removeActionObserver(token)
+    }
+
+    #expect(observed == [.incrementTapped])
+  }
+
   @Test("TCAInteractor optional delegate observation can be absent")
   func interactorWithoutRelayIsSafe() {
     let store = Store(initialState: PlainFeature.State()) {
