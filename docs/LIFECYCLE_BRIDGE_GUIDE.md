@@ -19,6 +19,23 @@ Required close sequence for dismissible modules:
 
 This ordering prevents leaked observers/tasks and aligns module lifetime with visible UI lifetime.
 
+## User-Driven Navigation Auto-Sync
+`SwiftUIHostingRouter` now supports automatic lifecycle synchronization when UIKit closes a screen directly:
+
+1. Back button or swipe-back pop (`removedFromParent`)
+2. Interactive modal swipe-down or direct dismiss (`dismissed`)
+
+Use router helpers to keep cleanup idempotent:
+
+- `attachActivateAndPush(_:in:animated:onRelease:)`
+- `deactivateDetachAndPop(_:in:to:animated:onRelease:)`
+- `attachActivateAndPresent(_:from:animated:onRelease:completion:)`
+- `deactivateDetachAndDismiss(_:animated:onRelease:completion:)`
+- `deactivateDetachAndReleaseIfNeeded(_:onRelease:)`
+
+`onRelease` should clear retained child references (`childRouter = nil`) so dismissible modules are collectible after close.
+Prefer registering `onRelease` at attach/present time so user-driven and programmatic close paths share one release callback.
+
 ## Action Observation and Delegate-First
 Use action observation for upstream module intent:
 

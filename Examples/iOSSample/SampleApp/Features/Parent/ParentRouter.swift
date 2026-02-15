@@ -45,7 +45,14 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
       self?.dismissChildIfNeeded(animated: true)
     })
     self.childRouter = childRouter
-    attachActivateAndPush(childRouter, in: navigationController, animated: animated)
+    attachActivateAndPush(
+      childRouter,
+      in: navigationController,
+      animated: animated,
+      onRelease: { [weak self] in
+        self?.childRouter = nil
+      }
+    )
   }
 
   private func dismissChildIfNeeded(animated: Bool) {
@@ -59,6 +66,5 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
       to: viewController,
       animated: animated
     )
-    self.childRouter = nil
   }
 }

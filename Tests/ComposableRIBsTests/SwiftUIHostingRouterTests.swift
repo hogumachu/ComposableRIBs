@@ -32,11 +32,15 @@ struct SwiftUIHostingRouterTests {
   }
 
   final class ChildRouter: BaseRouter, RoutableViewControlling {
-    let viewController = UIViewController()
+    let viewController: UIViewController
     let interactor: any Interactable
 
-    init(interactor: any Interactable) {
+    init(
+      interactor: any Interactable,
+      viewController: UIViewController = UIViewController()
+    ) {
       self.interactor = interactor
+      self.viewController = viewController
       super.init()
     }
   }
@@ -87,5 +91,81 @@ struct SwiftUIHostingRouterTests {
     #expect(host.children.isEmpty)
     #expect(spy.deactivateCount == 1)
     #expect(navigationController.topViewController === host.viewController)
+  }
+
+  @Test("attachActivate works without navigation controller")
+  func attachActivateWithoutNavigationController() {
+    let host = HostRouter()
+    let spy = SpyInteractor()
+    let child = ChildRouter(interactor: spy)
+
+    host.attachActivate(child)
+    host.deactivateDetachAndReleaseIfNeeded(child)
+
+    #expect(host.children.isEmpty)
+    #expect(spy.activateCount == 1)
+    #expect(spy.deactivateCount == 1)
+  }
+
+  @Test("User-driven pop deactivates and detaches child router exactly once")
+  func userDrivenPopSynchronizesLifecycleAndTree() {
+    let host = HostRouter()
+    let navigationController = UINavigationController(rootViewController: host.viewController)
+    let spy = SpyInteractor()
+    let child = ChildRouter(
+      interactor: spy,
+      viewController: NavigationLifecycleHostingController(rootView: EmptyView())
+    )
+
+    host.attachActivateAndPush(child, in: navigationController, animated: false)
+
+    _ = navigationController.popViewController(animated: false)
+
+    #expect(host.children.isEmpty)
+    #expect(spy.deactivateCount == 1)
+  }
+
+  @Test("User-driven modal dismiss deactivates and detaches child router")
+  func userDrivenModalDismissSynchronizesLifecycleAndTree() {
+    let host = HostRouter()
+    let window = UIWindow(frame: UIScreen.main.bounds)
+    window.rootViewController = host.viewController
+    window.makeKeyAndVisible()
+
+    let spy = SpyInteractor()
+    let child = ChildRouter(
+      interactor: spy,
+      viewController: NavigationLifecycleHostingController(rootView: EmptyView())
+    )
+
+    host.attachActivateAndPresent(child, from: host.viewController, animated: false)
+    child.viewController.dismiss(animated: false)
+
+    #expect(host.children.isEmpty)
+    #expect(spy.deactivateCount == 1)
+  }
+
+  @Test("Programmatic close remains idempotent after lifecycle callback")
+  func manualCloseAfterLifecycleCallbackDoesNotDuplicateDeactivation() {
+    let host = HostRouter()
+    let navigationController = UINavigationController(rootViewController: host.viewController)
+    let spy = SpyInteractor()
+    let child = ChildRouter(
+      interactor: spy,
+      viewController: NavigationLifecycleHostingController(rootView: EmptyView())
+    )
+
+    host.attachActivateAndPush(child, in: navigationController, animated: false)
+    _ = navigationController.popViewController(animated: false)
+
+    host.deactivateDetachAndPop(
+      child,
+      in: navigationController,
+      to: host.viewController,
+      animated: false
+    )
+
+    #expect(host.children.isEmpty)
+    #expect(spy.deactivateCount == 1)
   }
 }

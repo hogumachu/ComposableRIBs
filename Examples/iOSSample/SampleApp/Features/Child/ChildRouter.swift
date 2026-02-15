@@ -8,7 +8,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
   private let grandchildBuilder: any GrandchildBuildable
   private var grandchildRouter: (any GrandchildRouting)?
   private weak var navigationController: UINavigationController?
-  private var isGrandchildAttached = false
   private var onCloseRequested: (() -> Void)?
 
   init(
@@ -49,7 +48,6 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
 
   private func presentGrandchildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
-    guard !isGrandchildAttached else { return }
     guard grandchildRouter == nil else { return }
     let grandchildDependency = ChildComponent(dependency: dependency)
     let grandchildRouter = grandchildBuilder.build(with: grandchildDependency)
@@ -57,22 +55,25 @@ final class ChildRouter: SwiftUIHostingRouter<ChildFeature, ChildView>, ChildRou
       self?.dismissGrandchildIfNeeded(animated: true)
     })
     self.grandchildRouter = grandchildRouter
-    attachActivateAndPush(grandchildRouter, in: navigationController, animated: animated)
-    isGrandchildAttached = true
+    attachActivateAndPush(
+      grandchildRouter,
+      in: navigationController,
+      animated: animated,
+      onRelease: { [weak self] in
+        self?.grandchildRouter = nil
+      }
+    )
   }
 
   private func dismissGrandchildIfNeeded(animated: Bool) {
     guard let navigationController else { return }
     guard let grandchildRouter else { return }
-    guard isGrandchildAttached else { return }
     deactivateDetachAndPop(
       grandchildRouter,
       in: navigationController,
       to: viewController,
       animated: animated
     )
-    isGrandchildAttached = false
-    self.grandchildRouter = nil
   }
 
 }

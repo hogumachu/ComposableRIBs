@@ -15,6 +15,7 @@ ComposableRIBs is an iOS-focused library that combines TCA for UI and business l
 - Protocol-first module contracts are mandatory.
 - Concrete dependency leakage across module boundaries is forbidden.
 - Presentation state/action is TCA-owned; UIKit navigation side effects are router-owned.
+- User-driven UIKit close paths (back/swipe-back/modal dismiss) should synchronize router lifecycle through `SwiftUIHostingRouter` lifecycle helpers.
 - App entry should be launch-router driven (`SceneDelegate -> LaunchRouting.launch(from:)`) so root routing lifetime is retained explicitly.
 - Upstream cross-module intent is delegate-first (`Action.delegate(...)`) when parent coordination is needed.
 - Delegate channels are optional by default and should be introduced only where upstream signaling is required.
@@ -90,6 +91,7 @@ This snippet is a conceptual starter to show interactor wiring, not a full produ
 - `TCAInteractor.observeDelegateEvents(for:_:)`: Preferred case-path delegate extraction API for upstream module intent.
 - `DelegateActionExtractable`: Legacy-compatible optional delegate extraction contract retained during v0.x migration.
 - `SwiftUIHostingRouter`: Centralizes store/interactor/view hosting and shared navigation lifecycle helpers.
+- `NavigationLifecycleHostingController`: Emits one-shot pop/dismiss lifecycle signals used by router helpers to keep detach/deactivate idempotent.
 - `LaunchRouting` + `UIKitLaunchRouter`: Standardize app entry ownership and root lifecycle activation for UIKit-hosted modules.
 - Protocol-first boundary rule: parent-child composition must use dependency contracts instead of concrete parent types.
 

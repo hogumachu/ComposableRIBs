@@ -99,18 +99,25 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
     let dependency = ParentToChildComponent(dependency: interactor.store)
     let child = childBuilder.build(with: dependency)
     child.bind(navigationController: navigationController)
-    attachChild(child)
-    child.interactor.activate()
-    navigationController.pushViewController(child.viewController, animated: true)
     childRouter = child
+    attachActivateAndPush(
+      child,
+      in: navigationController,
+      animated: true,
+      onRelease: { [weak self] in
+        self?.childRouter = nil
+      }
+    )
   }
 
   private func dismissChildIfNeeded() {
-    guard let childRouter else { return }
-    childRouter.interactor.deactivate()
-    detachChild(childRouter)
-    navigationController?.popToViewController(viewController, animated: true)
-    self.childRouter = nil
+    guard let childRouter, let navigationController else { return }
+    deactivateDetachAndPop(
+      childRouter,
+      in: navigationController,
+      to: viewController,
+      animated: true
+    )
   }
 }
 ```
@@ -120,6 +127,7 @@ final class ParentRouter: SwiftUIHostingRouter<ParentFeature, ParentView>, Paren
 2. State-flag polling for routing (`showX`, `shouldClose`) creates implicit coupling and stale transitions.
 3. Passing concrete parent dependencies into child builders breaks protocol-first boundaries.
 4. Routing logic in reducers or views blurs ownership and makes lifecycle behavior harder to test.
+5. Forgetting `onRelease` cleanup for dismissible router references causes retained child leaks.
 
 ## Review Checklist
 1. Builder inputs and outputs are contract-based (`any Protocol`), not concrete module types.
